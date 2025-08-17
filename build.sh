@@ -6,7 +6,7 @@ set -o errexit
 pip install -r requirements.txt
 
 # make sure django has all the things it needs to run
-cd $(dirname $(find . | grep manage.py$))
+cd TP-Adopciones
 
 # preparar Django
 python manage.py collectstatic --no-input
