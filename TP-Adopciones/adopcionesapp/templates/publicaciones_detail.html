@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Detalle{% endblock %}
+{% block content %}
+<h2>{{ publicacion.titulo }}</h2>
+<p><strong>Tipo:</strong> {{ publicacion.tipo_animal }}</p>
+<p><strong>Edad:</strong> {{ publicacion.edad }} años</p>
+<p>{{ publicacion.descripcion }}</p>
+
+<a href="#" class="btn btn-primary">Enviar consulta</a>
+{% endblock %}

@@ -1,0 +1,13 @@
+CREAR NUEVA APP: python manage.py startapp adopcionesapp
+EJECUTAR PROYECTO: python manage.py runserver
+
+VIRTUAL ENVIRONMENT:
+source "C:/Users/nicol/Desktop/Ingenieria Web/TP-Adopciones/venv/Scripts/activate"
+deactivate
+
+BASE DE DATOS:
+python manage.py makemigrations adopcionesapp
+python manage.py migrate
+
+CREATE SUPER USUARIO:
+python manage.py createsuperuser

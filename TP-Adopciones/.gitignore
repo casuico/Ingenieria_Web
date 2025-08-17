@@ -1,0 +1,39 @@
+# Entorno virtual
+venv/
+ENV/
+env/
+.venv/
+
+# Archivos de Python compilados
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Archivos de base de datos
+db.sqlite3
+
+# Archivos de migraciones (opcional)
+*/migrations/*.pyc
+*/migrations/__pycache__/
+# si quieres, puedes ignorar todas las migraciones excepto __init__.py
+# */migrations/*.py
+# !*/migrations/__init__.py
+
+# Archivos estáticos compilados / collectstatic
+/staticfiles/
+/media/
+
+# Archivos de configuración de IDE / editores
+*.idea/
+*.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Archivos de logs
+*.log
+
+# MacOS
+.DS_Store
+
+# Windows
+Thumbs.db
