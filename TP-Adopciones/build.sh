@@ -2,10 +2,15 @@
 set -o errexit
 
 # install project dependencies
-uv sync
+#uv sync
+pip install -r requirements.txt
 
 # make sure django has all the things it needs to run
 cd $(dirname $(find . | grep manage.py$))
-uv run ./manage.py collectstatic --no-input
-uv run ./manage.py migrate
-uv run ./manage.py createsuperuser --username admin --email "nicolas_clementz@hotmail.com" --noinput || true
+
+# preparar Django
+python manage.py collectstatic --no-input
+python manage.py migrate
+
+# crear superusuario si no existe
+python manage.py createsuperuser --username admin --email "nicolas_clementz@hotmail.com" --noinput || true
