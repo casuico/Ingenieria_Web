@@ -2,7 +2,7 @@ CREAR NUEVA APP: python manage.py startapp adopcionesapp
 EJECUTAR PROYECTO: python manage.py runserver
 
 VIRTUAL ENVIRONMENT:
-source "C:/Users/nicol/Desktop/Ingenieria Web/TP-Adopciones/venv/Scripts/activate"
+source "C:/Users/nicol/Desktop/Ingenieria Web/TP_Adopciones/venv/Scripts/activate"
 deactivate
 
 BASE DE DATOS:

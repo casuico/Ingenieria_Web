@@ -2,5 +2,5 @@
 set -o errexit
 
 # run the web app server
-cd TP-Adopciones
-gunicorn TP-Adopciones.wsgi:application
+cd TP_Adopciones
+gunicorn TP_Adopciones.wsgi:application
