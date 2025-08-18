@@ -5,7 +5,11 @@ from django.core.exceptions import ValidationError
 import os
 from cloudinary.models import CloudinaryField
 
-
+if 'RENDER' in os.environ:
+    ArchivoField = CloudinaryField
+else:
+    ArchivoField = models.FileField
+    
 class Publicacion(models.Model):
     TIPO_ANIMAL_CHOICES = [
         ('Perro', 'Perro'),
@@ -78,7 +82,7 @@ class Multimedia(models.Model):
         related_name="multimedia"
     )
     tipo = models.CharField(max_length=10, choices=TIPO_CHOICES)
-    archivo = CloudinaryField('image_or_video')
+    archivo = ArchivoField('image_or_video')
 
     def __str__(self):
         return f"{self.tipo} de {self.publicacion.nombre}"
