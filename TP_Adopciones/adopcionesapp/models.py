@@ -1,6 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models import JSONField  # Compatible con SQLite y Postgres
+from django.db.models import JSONField
+from django.core.exceptions import ValidationError
+import os
+
 
 class Publicacion(models.Model):
     TIPO_ANIMAL_CHOICES = [
@@ -16,7 +19,7 @@ class Publicacion(models.Model):
 
     nombre = models.CharField(max_length=50, blank=False, null=False)
     tipo_animal = models.CharField(max_length=10, choices=TIPO_ANIMAL_CHOICES)
-    raza = models.CharField(max_length=50, blank=False, null=False)
+    raza = models.CharField(max_length=50, blank=True, null=False)
     edad = models.PositiveIntegerField(help_text="Edad en años")
     sexo = models.CharField(max_length=1, choices=SEXO_CHOICES)
 
@@ -33,11 +36,8 @@ class Publicacion(models.Model):
     comportamiento = models.TextField(blank=True, null=True)
 
     # Ubicación y logística
-    hogar_actual = models.CharField(max_length=100)
+    hogar_actual = models.CharField(max_length=100, blank=False, null=False)
     condiciones_adopcion = models.TextField(blank=False, null=False)
-
-    # Multimedia
-    imagen = models.ImageField(upload_to='imagenes_animales/', blank=False, null=False)
 
     # Información adicional
     historia = models.TextField(blank=True, null=True)
@@ -63,3 +63,43 @@ class Consulta(models.Model):
 
     def __str__(self):
         return self.asunto
+
+
+class Multimedia(models.Model):
+    TIPO_CHOICES = [
+        ('imagen', 'Imagen'),
+        ('video', 'Video'),
+    ]
+
+    publicacion = models.ForeignKey(
+        Publicacion,
+        on_delete=models.CASCADE,
+        related_name="multimedia"
+    )
+    tipo = models.CharField(max_length=10, choices=TIPO_CHOICES)
+    archivo = models.FileField()  # Cloudinary se encarga del upload
+
+    def __str__(self):
+        return f"{self.tipo} de {self.publicacion.nombre}"
+    
+    def clean(self):
+        super().clean()
+
+        if not self.archivo:
+            return
+
+        # Determinar la ruta real del archivo
+        if hasattr(self.archivo, 'temporary_file_path'):
+            file_path = self.archivo.temporary_file_path()
+        else:
+            file_path = self.archivo.path
+
+        # Obtener extensión en minúsculas
+        ext = os.path.splitext(file_path)[1].lower()
+
+        if self.tipo == "imagen":
+            if ext not in ['.jpg', '.jpeg', '.png', '.gif']:
+                raise ValidationError("Extension de archivo incorrecta, solo se permiten extensiones '.jpg', '.jpeg', '.png', '.gif'.")
+        elif self.tipo == "video":
+            if ext not in ['.mp4', '.mov', '.avi', '.mkv', '.webm']:
+                raise ValidationError("Extension de archivo incorrecta, solo se permiten extensiones '.mp4', '.mov', '.avi', '.mkv', '.webm'")

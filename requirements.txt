@@ -7,3 +7,5 @@ dj-database-url
 whitenoise[brotli]
 gunicorn
 Pillow
+cloudinary 
+django-cloudinary-storage

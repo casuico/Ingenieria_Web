@@ -1,11 +1,16 @@
-# crear_publicaciones.py
+import os
+import django
+
+# Configurar settings de Django antes de cualquier importación de modelos
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'adopciones_project.settings')
+django.setup()
+
 from adopcionesapp.models import Publicacion
+
 
 # Eliminar publicaciones existentes
 Publicacion.objects.all().delete()
 
-# Imagen que se usará para todas
-imagen_comun = "imagenes_animales/perro.jpeg"
 
 # Crear 5 publicaciones
 Publicacion.objects.create(
@@ -22,7 +27,6 @@ Publicacion.objects.create(
     comportamiento="Amigable con niños y otros perros",
     hogar_actual="Refugio Municipal",
     condiciones_adopcion="Debe tener espacio para correr y paseos diarios",
-    imagen=imagen_comun,
     historia="Rescatado de la calle",
     recomendaciones_cuidado="Alimentación balanceada y paseos diarios",
     contacto="contacto@refugio.com"
@@ -42,7 +46,6 @@ Publicacion.objects.create(
     comportamiento="Cariñoso y juguetón",
     hogar_actual="Refugio Municipal",
     condiciones_adopcion="Necesita espacio interior y compañía",
-    imagen=imagen_comun,
     historia="Adoptado temporalmente por familia",
     recomendaciones_cuidado="Proporcionar rascadores y juguetes",
     contacto="contacto@refugio.com"
@@ -62,7 +65,6 @@ Publicacion.objects.create(
     comportamiento="Muy activo y curioso",
     hogar_actual="Refugio Municipal",
     condiciones_adopcion="Requiere jaula amplia y supervisión diaria",
-    imagen=imagen_comun,
     historia="Rescatado de granja",
     recomendaciones_cuidado="Atención diaria y alimentación específica",
     contacto="contacto@refugio.com"
@@ -82,7 +84,6 @@ Publicacion.objects.create(
     comportamiento="Tranquila y sociable",
     hogar_actual="Hogar Temporal",
     condiciones_adopcion="Necesita patio y compañía diaria",
-    imagen=imagen_comun,
     historia="Rescatada de abandono",
     recomendaciones_cuidado="Ejercicios diarios y paseos",
     contacto="contacto@refugio.com"
@@ -102,10 +103,9 @@ Publicacion.objects.create(
     comportamiento="Curioso y juguetón",
     hogar_actual="Refugio Municipal",
     condiciones_adopcion="Espacio amplio y cariño",
-    imagen=imagen_comun,
     historia="Encontrado en la calle",
     recomendaciones_cuidado="Juguetes y rascadores",
     contacto="contacto@refugio.com"
 )
 
-print("✅ Se eliminaron las publicaciones existentes y se crearon 5 nuevas con la misma imagen")
+print("Se eliminaron las publicaciones existentes y se crearon 5 nuevas con la misma imagen")

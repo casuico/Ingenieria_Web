@@ -7,11 +7,38 @@
 <div class="publicaciones-list">
     {% for pub in publicaciones %}
     <div class="card mb-4">
-        <div class="row g-0">
-            {% if pub.imagen %}
+        <div class="row g-4 mt-3 mb-3">
+            {% if pub.multimedia.all %}
             <div class="col-md-4">
-                <img src="{% static 'imagenes_animales/perro.jpeg' %}" class="img-fluid rounded-start"
-                    alt="{{ pub.titulo }}">
+                <div id="carousel{{ forloop.counter }}" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        {% for media in pub.multimedia.all %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            {% if media.tipo == "imagen" %}
+                            <img src="{{ media.archivo.url }}" class="d-block w-50 rounded-start"
+                                alt="{{ pub.nombre }}">
+                            {% elif media.tipo == "video" %}
+                            <video controls class="d-block w-50 rounded-start">
+                                <source src="{{ media.archivo.url }}" type="video/mp4">
+                                Tu navegador no soporta la reproducción de videos.
+                            </video>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% if pub.multimedia.count > 1 %}
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carousel{{ forloop.counter }}"
+                        data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Anterior</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carousel{{ forloop.counter }}"
+                        data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Siguiente</span>
+                    </button>
+                    {% endif %}
+                </div>
             </div>
             {% endif %}
             <div class="col-md-8">

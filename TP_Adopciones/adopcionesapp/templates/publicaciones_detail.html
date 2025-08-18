@@ -6,12 +6,41 @@
 <div class="row justify-content-center">
     <div class="col-md-8">
         <div class="card mb-4 shadow-sm">
-            {% if publicacion.imagen %}
-            <div class="d-flex justify-content-center my-3">
-                <img src="{% static 'imagenes_animales/perro.jpeg' %}" alt="{{ publicacion.nombre }}"
-                    style="width: 50%; height: auto;">
+            {% if publicacion.multimedia.all %}
+            <div id="carouselDetail" class="carousel slide my-3" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    {% for media in publicacion.multimedia.all %}
+                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                        {% if media.tipo == "imagen" %}
+                        <img src="{{ media.archivo.url }}" class="d-block mx-auto"
+                            style="width: 300px; height: 300px; object-fit: cover;" alt="{{ publicacion.nombre }}">
+                        {% elif media.tipo == "video" %}
+                        <video controls class="d-block mx-auto" style="width: 300px; height: 300px; object-fit: cover;">
+                            <source src="{{ media.archivo.url }}" type="video/mp4">
+                            Tu navegador no soporta la reproducción de videos.
+                        </video>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+
+                {% if publicacion.multimedia.count > 1 %}
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselDetail"
+                    data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" style="background-color: black; border-radius: 30%;"
+                        aria-hidden="true"></span>
+                    <span class="visually-hidden">Anterior</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselDetail"
+                    data-bs-slide="next">
+                    <span class="carousel-control-next-icon" style="background-color: black; border-radius: 30%;"
+                        aria-hidden="true"></span>
+                    <span class="visually-hidden">Siguiente</span>
+                </button>
+                {% endif %}
             </div>
             {% endif %}
+
             <div class="card-body">
                 <h2 class="card-title">{{ publicacion.nombre }}</h2>
                 <p class="mb-1">
