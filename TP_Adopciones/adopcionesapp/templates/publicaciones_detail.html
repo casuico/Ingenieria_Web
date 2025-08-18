@@ -1,12 +1,82 @@
 {% extends "base.html" %}
-{% block title %}Detalle{% endblock %}
-{% block content %}
-<h2>{{ publicacion.titulo }}</h2>
-<p><strong>Tipo:</strong> {{ publicacion.tipo_animal }}</p>
-<p><strong>Edad:</strong> {{ publicacion.edad }} años</p>
-<p>{{ publicacion.descripcion }}</p>
+{% load static %}
+{% block title %}Detalle de {{ publicacion.nombre }}{% endblock %}
 
-<a href="{% url 'consulta_animal' publicacion.pk %}" class="btn btn-primary">
-    Enviar consulta
-</a>
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card mb-4 shadow-sm">
+            {% if publicacion.imagen %}
+            <div class="d-flex justify-content-center my-3">
+                <img src="{% static 'imagenes_animales/perro.jpeg' %}" alt="{{ publicacion.nombre }}"
+                    style="width: 50%; height: auto;">
+            </div>
+            {% endif %}
+            <div class="card-body">
+                <h2 class="card-title">{{ publicacion.nombre }}</h2>
+                <p class="mb-1">
+                    <span class="badge bg-primary">{{ publicacion.tipo_animal }}</span>
+                    <span class="badge bg-secondary">{{ publicacion.raza }}</span>
+                    <span class="badge bg-info text-dark">{{ publicacion.edad }} años</span>
+                    <span class="badge bg-warning text-dark">
+                        {% if publicacion.sexo == "M" %}Macho{% else %}Hembra{% endif %}
+                    </span>
+                </p>
+
+                <hr>
+
+                <h5>Salud</h5>
+                <ul>
+                    <li>Castrado: {{ publicacion.castrado|yesno:"Sí,No" }}</li>
+                    <li>Enfermedades: {{ publicacion.enfermedades|default:"Ninguna conocida" }}</li>
+                    <li>Vacunas:
+                        {% if publicacion.vacunas %}
+                        <ul>
+                            {% for v in publicacion.vacunas %}
+                            <li>{{ v }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% else %}
+                        Ninguna registrada
+                        {% endif %}
+                    </li>
+                </ul>
+
+                <h5>Comportamiento y compatibilidad</h5>
+                <ul>
+                    <li>Compatible con otros animales: {{ publicacion.compatibilidad_otros_animales|yesno:"Sí,No" }}
+                    </li>
+                    <li>Compatible con niños: {{ publicacion.compatibilidad_ninos|yesno:"Sí,No" }}</li>
+                    <li>Comportamiento: {{ publicacion.comportamiento|default:"No hay información adicional" }}</li>
+                </ul>
+
+                <h5>Ubicación y adopción</h5>
+                <ul>
+                    <li>Hogar actual: {{ publicacion.hogar_actual }}</li>
+                    <li>Condiciones de adopción: {{ publicacion.condiciones_adopcion }}</li>
+                </ul>
+
+                {% if publicacion.historia %}
+                <h5>Historia</h5>
+                <p>{{ publicacion.historia }}</p>
+                {% endif %}
+
+                {% if publicacion.recomendaciones_cuidado %}
+                <h5>Recomendaciones de cuidado</h5>
+                <p>{{ publicacion.recomendaciones_cuidado }}</p>
+                {% endif %}
+
+                <h5>Contacto</h5>
+                <p>{{ publicacion.contacto }}</p>
+
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <a href="{% url 'consulta_animal' publicacion.pk %}" class="btn btn-primary">
+                        Enviar consulta
+                    </a>
+                    <small class="text-muted">Publicado el {{ publicacion.creado|date:"d/m/Y" }}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
