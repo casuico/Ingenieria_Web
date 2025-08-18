@@ -4,6 +4,7 @@ from .models import Publicacion
 from django.contrib.auth.decorators import login_required
 from .forms import RegistroForm
 from django.contrib.auth import login
+from .models import Consulta
 
 
 
@@ -12,8 +13,6 @@ def main_page(request):
     publicaciones = Publicacion.objects.all()
     return render(request, "index.html", {"publicaciones": publicaciones})
 
-# Detalle protegido
-@login_required
 def publicaciones_detail(request, pk):
     publicacion = get_object_or_404(Publicacion, pk=pk)
     return render(request, "publicaciones_detail.html", {"publicacion": publicacion})
@@ -28,3 +27,20 @@ def registro(request):
     else:
         form = RegistroForm()
     return render(request, "registro.html", {"form": form})
+
+@login_required
+def consulta_animal(request, pk):
+    publicacion = get_object_or_404(Publicacion, pk=pk)
+
+    if request.method == "POST":
+        Consulta.objects.create(
+            publicacion=publicacion,
+            usuario=request.user,
+            nombre=request.POST.get("nombre"),
+            email=request.POST.get("email"),
+            asunto=request.POST.get("asunto"),
+            mensaje=request.POST.get("mensaje")
+        )
+        return redirect('publicaciones_detail', pk=pk)  # Redirige a detalle
+
+    return render(request, "consulta_animal.html", {"publicacion": publicacion})

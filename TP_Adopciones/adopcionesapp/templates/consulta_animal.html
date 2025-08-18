@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Consulta sobre {{ publicacion.nombre }}{% endblock %}
+{% block content %}
+<h2>Consulta sobre {{ publicacion.nombre }}</h2>
+
+<form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="nombre" class="form-label">Tu nombre</label>
+        <input type="text" class="form-control" id="nombre" name="nombre" required>
+    </div>
+    <div class="mb-3">
+        <label for="email" class="form-label">Tu email</label>
+        <input type="email" class="form-control" id="email" name="email" required>
+    </div>
+    <div class="mb-3">
+        <label for="asunto" class="form-label">Asunto</label>
+        <input type="text" class="form-control" id="asunto" name="asunto" required>
+    </div>
+    <div class="mb-3">
+        <label for="mensaje" class="form-label">Mensaje</label>
+        <textarea class="form-control" id="mensaje" name="mensaje" rows="4" required></textarea>
+    </div>
+    <button type="submit" class="btn btn-success">Enviar consulta</button>
+    <a href="{% url 'publicaciones_detail' publicacion.pk %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

@@ -11,3 +11,6 @@ python manage.py migrate
 
 CREATE SUPER USUARIO:
 python manage.py createsuperuser
+
+SCRIPT PARA CREAR PUBLICACIONES DESDE BASH: python crear_publicaciones.py
+SCRIPT PARA CREAR PUBLICACIONES DESDE BASH: python crear_superusuario.py

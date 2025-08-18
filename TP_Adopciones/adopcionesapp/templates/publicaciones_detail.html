@@ -6,5 +6,7 @@
 <p><strong>Edad:</strong> {{ publicacion.edad }} años</p>
 <p>{{ publicacion.descripcion }}</p>
 
-<a href="#" class="btn btn-primary">Enviar consulta</a>
+<a href="{% url 'consulta_animal' publicacion.pk %}" class="btn btn-primary">
+    Enviar consulta
+</a>
 {% endblock %}
