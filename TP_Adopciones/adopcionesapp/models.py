@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.db.models import JSONField
 from django.core.exceptions import ValidationError
 import os
+from cloudinary.models import CloudinaryField
 
 
 class Publicacion(models.Model):
@@ -77,7 +78,7 @@ class Multimedia(models.Model):
         related_name="multimedia"
     )
     tipo = models.CharField(max_length=10, choices=TIPO_CHOICES)
-    archivo = models.FileField()  # Cloudinary se encarga del upload
+    archivo = CloudinaryField('image_or_video')
 
     def __str__(self):
         return f"{self.tipo} de {self.publicacion.nombre}"
