@@ -21,7 +21,6 @@ db.sqlite3
 
 # Archivos estáticos compilados / collectstatic
 /staticfiles/
-/media/
 
 # Archivos de configuración de IDE / editores
 *.idea/
