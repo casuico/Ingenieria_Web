@@ -4,12 +4,10 @@ from django.db.models import JSONField
 from django.core.exceptions import ValidationError
 import os
 from cloudinary.models import CloudinaryField
+from cloudinary.models import CloudinaryResource
+from django.core.files.uploadedfile import InMemoryUploadedFile, TemporaryUploadedFile
 
-if 'RENDER' in os.environ:
-    ArchivoField = CloudinaryField
-else:
-    ArchivoField = models.FileField
-    
+
 class Publicacion(models.Model):
     TIPO_ANIMAL_CHOICES = [
         ('Perro', 'Perro'),
@@ -82,29 +80,33 @@ class Multimedia(models.Model):
         related_name="multimedia"
     )
     tipo = models.CharField(max_length=10, choices=TIPO_CHOICES)
-    archivo = ArchivoField('image_or_video')
+    archivo = CloudinaryField(resource_type="auto")
 
     def __str__(self):
         return f"{self.tipo} de {self.publicacion.nombre}"
     
+
     def clean(self):
         super().clean()
 
         if not self.archivo:
             return
 
-        # Determinar la ruta real del archivo
-        if hasattr(self.archivo, 'temporary_file_path'):
-            file_path = self.archivo.temporary_file_path()
+        if isinstance(self.archivo, CloudinaryResource):
+            ext = self.archivo.format.lower()
+        elif isinstance(self.archivo, (InMemoryUploadedFile, TemporaryUploadedFile)):
+            ext = os.path.splitext(self.archivo.name)[1].lower().lstrip(".")  # quitar el punto
         else:
-            file_path = self.archivo.path
+            raise ValidationError("No se pudo determinar el tipo de archivo.")
 
-        # Obtener extensión en minúsculas
-        ext = os.path.splitext(file_path)[1].lower()
-
+        # Validación por tipo
         if self.tipo == "imagen":
-            if ext not in ['.jpg', '.jpeg', '.png', '.gif']:
-                raise ValidationError("Extension de archivo incorrecta, solo se permiten extensiones '.jpg', '.jpeg', '.png', '.gif'.")
+            if ext not in ['jpg', 'jpeg', 'png', 'gif']:
+                raise ValidationError(
+                    "Extensión de archivo incorrecta, solo se permiten '.jpg', '.jpeg', '.png', '.gif'."
+                )
         elif self.tipo == "video":
-            if ext not in ['.mp4', '.mov', '.avi', '.mkv', '.webm']:
-                raise ValidationError("Extension de archivo incorrecta, solo se permiten extensiones '.mp4', '.mov', '.avi', '.mkv', '.webm'")
+            if ext not in ['mp4', 'mov', 'avi', 'mkv', 'webm']:
+                raise ValidationError(
+                    "Extensión de archivo incorrecta, solo se permiten '.mp4', '.mov', '.avi', '.mkv', '.webm'."
+                )
