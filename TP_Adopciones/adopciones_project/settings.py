@@ -161,7 +161,7 @@ if 'RENDER' in os.environ:
         api_secret=os.environ.get('API_SECRET'),
     )
     DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-# else:
+else:
     # MEDIA_URL = '/media/'
     # MEDIA_ROOT = BASE_DIR / 'media'
     # DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
