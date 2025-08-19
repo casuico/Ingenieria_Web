@@ -13,6 +13,7 @@ from django.utils.encoding import force_bytes, force_str
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.contrib.auth.models import User
+from django.contrib import messages
 
 
 # Create your views here.
@@ -103,7 +104,7 @@ def consulta_animal(request, pk):
             mensaje=mensaje
         )
 
-        # Texto plano
+        # Texto plano del email
         text_content = f"""
         Consulta sobre {publicacion.nombre}
 
@@ -133,6 +134,10 @@ def consulta_animal(request, pk):
         msg.attach_alternative(html_content, "text/html")
         msg.send(fail_silently=False)
 
-        return redirect('publicaciones_detail', pk=publicacion.pk)
+        # Agregar mensaje de éxito
+        messages.success(request, f"Tu consulta sobre '{publicacion.nombre}' fue enviada correctamente.")
+
+        # Redirect para limpiar el POST (PRG)
+        return redirect('consulta_animal', pk=publicacion.pk)
 
     return render(request, "consulta_animal.html", {"publicacion": publicacion})
