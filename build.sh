@@ -7,6 +7,10 @@ pip install -r requirements.txt
 
 # make sure django has all the things it needs to run
 cd TP_Adopciones
+echo "DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE:-not set}"
+echo "Python version:"
+python --version
+pip list
 
 # preparar Django
 python manage.py collectstatic --no-input

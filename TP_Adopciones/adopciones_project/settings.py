@@ -135,14 +135,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "publicaciones_list"
 
-load_dotenv()
-import cloudinary
-cloudinary.config(
-    cloud_name=os.environ.get('CLOUD_NAME'),
-    api_key=os.environ.get('API_KEY'),
-    api_secret=os.environ.get('API_SECRET'),
-)
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
 ############ RENDER ##############
 
 # code needed to deploy in Render.com:
@@ -161,23 +154,23 @@ if 'RENDER' in os.environ:
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
     # Cloudinary en Render
-    # import cloudinary
-    # cloudinary.config(
-    #     cloud_name=os.environ.get('CLOUD_NAME'),
-    #     api_key=os.environ.get('API_KEY'),
-    #     api_secret=os.environ.get('API_SECRET'),
-    # )
-    # DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    import cloudinary
+    cloudinary.config(
+        cloud_name=os.environ.get('CLOUD_NAME'),
+        api_key=os.environ.get('API_KEY'),
+        api_secret=os.environ.get('API_SECRET'),
+    )
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 # else:
     # MEDIA_URL = '/media/'
     # MEDIA_ROOT = BASE_DIR / 'media'
     # DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
-    # load_dotenv()
-    # import cloudinary
-    # cloudinary.config(
-    #     cloud_name=os.environ.get('CLOUD_NAME'),
-    #     api_key=os.environ.get('API_KEY'),
-    #     api_secret=os.environ.get('API_SECRET'),
-    # )
-    # DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    load_dotenv()
+    import cloudinary
+    cloudinary.config(
+        cloud_name=os.environ.get('CLOUD_NAME'),
+        api_key=os.environ.get('API_KEY'),
+        api_secret=os.environ.get('API_SECRET'),
+    )
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
