@@ -1,14 +1,18 @@
 #from django.shortcuts import render
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Publicacion
+from .models import Publicacion, Consulta
 from django.contrib.auth.decorators import login_required
 from .forms import RegistroForm
 from django.contrib.auth import login
-from .models import Consulta
-from django.core.mail import EmailMessage
+from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
-from django.contrib import messages
-
+from django.http import HttpResponse
+from django.contrib.auth.tokens import default_token_generator as token_generator
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from django.contrib.sites.shortcuts import get_current_site
+from django.template.loader import render_to_string
+from django.contrib.auth.models import User
 
 
 # Create your views here.
@@ -20,16 +24,64 @@ def publicaciones_detail(request, pk):
     publicacion = get_object_or_404(Publicacion, pk=pk)
     return render(request, "publicaciones_detail.html", {"publicacion": publicacion})
 
+
 def registro(request):
     if request.method == "POST":
         form = RegistroForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            login(request, user)  # inicia sesión automáticamente
-            return redirect("main_page")  # redirige a la página principal
+            # Crear usuario inactivo
+            user = form.save(commit=False)
+            user.is_active = False
+            user.save()
+
+            # Generar URL de activación
+            current_site = get_current_site(request)
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            token = token_generator.make_token(user)
+            activation_url = f"http://{current_site.domain}/activar/{uid}/{token}/"
+
+            # Preparar mail
+            subject = "Activa tu cuenta"
+            from_email = settings.EMAIL_HOST_USER
+            to_email = form.cleaned_data.get("email")
+
+            # Texto plano
+            text_content = f"Hola {user.username}, haz clic en el enlace para activar tu cuenta: {activation_url}"
+
+            # HTML
+            html_content = render_to_string("email_verificacion.html", {
+                "user": user,
+                "url": activation_url
+            })
+
+            # Crear mensaje HTML
+            msg = EmailMultiAlternatives(subject, text_content, from_email, [to_email])
+            msg.attach_alternative(html_content, "text/html")
+            msg.send()
+
+            return render(request, "registro_exitoso.html")
     else:
         form = RegistroForm()
+
     return render(request, "registro.html", {"form": form})
+
+
+def activar_cuenta(request, uidb64, token):
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    if user is not None and token_generator.check_token(user, token):
+        user.is_active = True
+        user.save()
+        login(request, user)
+        return redirect("main_page")
+    else:
+        return HttpResponse("El enlace de activación no es válido o ya expiró.")
+
+
 
 @login_required
 def consulta_animal(request, pk):
@@ -51,16 +103,36 @@ def consulta_animal(request, pk):
             mensaje=mensaje
         )
 
-        # Preparar y enviar email
-        cuerpo = f"Nombre: {nombre}\nEmail: {email}\n\nMensaje:\n{mensaje}"
-        mail = EmailMessage(
+        # Texto plano
+        text_content = f"""
+        Consulta sobre {publicacion.nombre}
+
+        Nombre: {nombre}
+        Email: {email}
+
+        Mensaje:
+        {mensaje}
+        """
+
+        # HTML usando template
+        html_content = render_to_string("consulta_email.html", {
+            "publicacion": publicacion,
+            "nombre": nombre,
+            "email": email,
+            "mensaje": mensaje
+        })
+
+        # Enviar email
+        msg = EmailMultiAlternatives(
             subject=f"Consulta sobre {publicacion.nombre}: {asunto}",
-            body=cuerpo,
+            body=text_content,
             from_email=settings.EMAIL_HOST_USER,
             to=[publicacion.creador.email],
             headers={'Reply-To': email}
         )
-        mail.send(fail_silently=False)
+        msg.attach_alternative(html_content, "text/html")
+        msg.send(fail_silently=False)
+
         return redirect('publicaciones_detail', pk=publicacion.pk)
-    
+
     return render(request, "consulta_animal.html", {"publicacion": publicacion})
