@@ -47,6 +47,8 @@ class Publicacion(models.Model):
     recomendaciones_cuidado = models.TextField(blank=True, null=True)
     contacto = models.CharField(max_length=100)
 
+    creador = models.ForeignKey(User, on_delete=models.CASCADE, related_name="publicaciones")
+
     # Timestamps
     creado = models.DateTimeField(auto_now_add=True)
     actualizado = models.DateTimeField(auto_now=True)

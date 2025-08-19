@@ -95,10 +95,7 @@
                 <p>{{ publicacion.recomendaciones_cuidado }}</p>
                 {% endif %}
 
-                <h5>Contacto</h5>
-                <p>{{ publicacion.contacto }}</p>
-
-                <div class="d-flex justify-content-between align-items-center mt-3">
+                <div class="d-flex justify-content-between align-items-center mt-4">
                     <a href="{% url 'consulta_animal' publicacion.pk %}" class="btn btn-primary">
                         Enviar consulta
                     </a>

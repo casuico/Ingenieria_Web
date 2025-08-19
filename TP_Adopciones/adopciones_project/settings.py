@@ -135,10 +135,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "publicaciones_list"
 
+# Envio Email
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = os.environ.get('EMAIL_USER')      # tu email
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASS')  # tu contraseña o app password
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
 
 ############ RENDER ##############
-
-# code needed to deploy in Render.com:
 import os
 import dj_database_url
 
