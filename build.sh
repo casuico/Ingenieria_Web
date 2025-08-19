@@ -1,10 +1,6 @@
 # exit on error
 set -o errexit
 
-python -c "import django; print(django.get_version())"
-python manage.py help
-
-
 # install project dependencies
 #uv sync
 pip install -r requirements.txt
