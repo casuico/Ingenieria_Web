@@ -1,29 +1,26 @@
-# exit on error
+# salir si hay error
 set -o errexit
 
-# install project dependencies
-#uv sync
-pip install -r requirements.txt
+# actualizar pip
+python -m pip install --upgrade pip
 
-# make sure django has all the things it needs to run
+# instalar dependencias
+python -m pip install -r requirements.txt
+
+# moverse al proyecto
 cd TP_Adopciones
 
-echo "DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE:-not set}"
-echo "Python version:"
-python --version
-pip list
-
+# configurar Django
 export DJANGO_SETTINGS_MODULE=adopciones_project.settings
 export PYTHONPATH=$PWD
-echo "DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE"
-echo "PYTHONPATH=$PYTHONPATH"
 
-# chequear que Django carga correctamente
+# chequear Django
+python -m django --version
 python manage.py check
 
 # preparar Django
 python manage.py collectstatic --no-input --verbosity 2
 python manage.py migrate
 
-# crear superusuario si no existe
+# crear superusuario
 python manage.py createsuperuser --username admin --email "nicolas_clementz@hotmail.com" --noinput || true
