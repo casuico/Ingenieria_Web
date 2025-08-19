@@ -12,8 +12,10 @@ echo "Python version:"
 python --version
 pip list
 
+export DJANGO_SETTINGS_MODULE=adopciones_project.settings
+echo "DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE"
 # preparar Django
-python manage.py collectstatic --no-input
+python manage.py collectstatic --no-input --verbosity 2
 python manage.py migrate
 
 # crear superusuario si no existe
