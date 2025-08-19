@@ -9,6 +9,7 @@ pip install -r requirements.txt
 cd TP_Adopciones
 
 # preparar Django
+export DJANGO_SETTINGS_MODULE=adopciones_project.settings
 python manage.py collectstatic --no-input
 python manage.py migrate
 
