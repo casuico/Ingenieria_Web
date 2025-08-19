@@ -16,7 +16,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 
 
-# Create your views here.
+
 def main_page(request):
     publicaciones = Publicacion.objects.all()
     return render(request, "index.html", {"publicaciones": publicaciones})
