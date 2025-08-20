@@ -21,17 +21,17 @@ class Publicacion(models.Model):
     ]
 
     nombre = models.CharField(max_length=50, blank=False, null=False)
-    tipo_animal = models.CharField(max_length=10, choices=TIPO_ANIMAL_CHOICES)
-    raza = models.CharField(max_length=50, blank=True, null=False)
-    edad = models.PositiveIntegerField(help_text="Edad en años")
-    sexo = models.CharField(max_length=1, choices=SEXO_CHOICES)
+    tipo_animal = models.CharField(max_length=10, choices=TIPO_ANIMAL_CHOICES, blank=False, null=False)
+    raza = models.CharField(max_length=50, blank=False, null=False)
+    edad = models.PositiveIntegerField(help_text="Edad en años", blank=False, null=False)
+    sexo = models.CharField(max_length=1, choices=SEXO_CHOICES, blank=False, null=False)
 
     # Salud
-    castrado = models.BooleanField(default=False)
+    castrado = models.BooleanField(default=False, blank=False, null=False)
     enfermedades = models.TextField(blank=True, null=True)
     
     # Vacunas como lista
-    vacunas = JSONField(default=list, blank=True)  # Lista de strings
+    vacunas = JSONField(default=list, blank=True, null=True)  # Lista de strings
 
     # Comportamiento y compatibilidad
     compatibilidad_otros_animales = models.BooleanField(default=True)
@@ -45,7 +45,6 @@ class Publicacion(models.Model):
     # Información adicional
     historia = models.TextField(blank=True, null=True)
     recomendaciones_cuidado = models.TextField(blank=True, null=True)
-    contacto = models.CharField(max_length=100)
 
     creador = models.ForeignKey(User, on_delete=models.CASCADE, related_name="publicaciones")
 
@@ -82,7 +81,7 @@ class Multimedia(models.Model):
         related_name="multimedia"
     )
     tipo = models.CharField(max_length=10, choices=TIPO_CHOICES)
-    archivo = CloudinaryField(resource_type="auto")
+    archivo = CloudinaryField(resource_type="auto", blank=False, null=False)
 
     def __str__(self):
         return f"{self.tipo} de {self.publicacion.nombre}"

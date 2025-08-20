@@ -1,12 +1,13 @@
 #from django.shortcuts import render
+from django.forms import ValidationError
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Publicacion, Consulta
+from .models import Publicacion, Consulta, Multimedia
 from django.contrib.auth.decorators import login_required
 from .forms import RegistroForm
 from django.contrib.auth import login
 from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.tokens import default_token_generator as token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
@@ -14,12 +15,40 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.views import View
+from .forms import PublicacionForm, MultimediaForm
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 
 
 
 def main_page(request):
     publicaciones = Publicacion.objects.all()
     return render(request, "index.html", {"publicaciones": publicaciones})
+
+def filter_publicaciones(request):
+    publicaciones = Publicacion.objects.all()
+
+    edad = request.GET.get("edad")
+    sexo = request.GET.get("sexo")
+    raza = request.GET.get("raza")
+    castrado = request.GET.get("castrado")
+
+    if edad:
+        publicaciones = publicaciones.filter(edad=edad)
+    if sexo:
+        publicaciones = publicaciones.filter(sexo=sexo)
+    if raza:
+        publicaciones = publicaciones.filter(raza__icontains=raza)
+    if castrado:
+        publicaciones = publicaciones.filter(castrado=(castrado.lower() == "true"))
+
+    if request.headers.get("x-requested-with") == "XMLHttpRequest":
+        return render(request, "partials/publicaciones_list.html", {"publicaciones": publicaciones})
+
+    # Si no es AJAX, redirigimos a la página principal
+    return render(request, "index.html", {"publicaciones": publicaciones})
+
 
 def publicaciones_detail(request, pk):
     publicacion = get_object_or_404(Publicacion, pk=pk)
@@ -30,26 +59,21 @@ def registro(request):
     if request.method == "POST":
         form = RegistroForm(request.POST)
         if form.is_valid():
-            # Crear usuario inactivo
             user = form.save(commit=False)
             user.is_active = False
             user.save()
 
-            # Generar URL de activación
             current_site = get_current_site(request)
             uid = urlsafe_base64_encode(force_bytes(user.pk))
             token = token_generator.make_token(user)
             activation_url = f"http://{current_site.domain}/activar/{uid}/{token}/"
 
-            # Preparar mail
             subject = "Activa tu cuenta"
             from_email = settings.EMAIL_HOST_USER
             to_email = form.cleaned_data.get("email")
 
-            # Texto plano
             text_content = f"Hola {user.username}, haz clic en el enlace para activar tu cuenta: {activation_url}"
 
-            # HTML
             html_content = render_to_string("email_verificacion.html", {
                 "user": user,
                 "url": activation_url
@@ -94,7 +118,6 @@ def consulta_animal(request, pk):
         asunto = request.POST.get("asunto")
         mensaje = request.POST.get("mensaje")
 
-        # Guardar consulta
         Consulta.objects.create(
             publicacion=publicacion,
             usuario=request.user,
@@ -104,7 +127,6 @@ def consulta_animal(request, pk):
             mensaje=mensaje
         )
 
-        # Texto plano del email
         text_content = f"""
         Consulta sobre {publicacion.nombre}
 
@@ -115,7 +137,6 @@ def consulta_animal(request, pk):
         {mensaje}
         """
 
-        # HTML usando template
         html_content = render_to_string("consulta_email.html", {
             "publicacion": publicacion,
             "nombre": nombre,
@@ -123,7 +144,6 @@ def consulta_animal(request, pk):
             "mensaje": mensaje
         })
 
-        # Enviar email
         msg = EmailMultiAlternatives(
             subject=f"Consulta sobre {publicacion.nombre}: {asunto}",
             body=text_content,
@@ -134,10 +154,64 @@ def consulta_animal(request, pk):
         msg.attach_alternative(html_content, "text/html")
         msg.send(fail_silently=False)
 
-        # Agregar mensaje de éxito
         messages.success(request, f"Tu consulta sobre '{publicacion.nombre}' fue enviada correctamente.")
 
-        # Redirect para limpiar el POST (PRG)
         return redirect('consulta_animal', pk=publicacion.pk)
 
     return render(request, "consulta_animal.html", {"publicacion": publicacion})
+
+
+
+class CrearPublicacionView(LoginRequiredMixin, View):
+    def get(self, request):
+        return render(
+            request,
+            "crear_publicacion.html",
+            {
+                "publicacion_form": PublicacionForm(),
+                "multimedia_form": MultimediaForm(),
+            },
+        )
+
+    def post(self, request):
+        publicacion_form = PublicacionForm(request.POST)
+        multimedia_form = MultimediaForm(request.POST, request.FILES)
+
+        if publicacion_form.is_valid() and multimedia_form.is_valid():
+            publicacion = publicacion_form.save(commit=False)
+            publicacion.creador = request.user
+            publicacion.save()
+
+            content_type_map = {"image": "imagen", "video": "video"}
+
+            for archivo in multimedia_form.cleaned_data["archivos"]:
+                tipo = content_type_map.get(archivo.content_type.split("/")[0], "imagen")
+                multimedia = Multimedia(
+                    publicacion=publicacion,
+                    archivo=archivo,
+                    tipo=tipo,
+                )
+                try:
+                    multimedia.full_clean()
+                    multimedia.save()
+                except ValidationError as e:
+                    multimedia_form.add_error(None, e.messages)
+                    publicacion.delete()
+                    return render(
+                        request,
+                        "crear_publicacion.html",
+                        {
+                            "publicacion_form": publicacion_form,
+                            "multimedia_form": multimedia_form,
+                        },
+                    )
+            return redirect("publicaciones_detail", pk=publicacion.pk)
+        
+        return render(
+            request,
+            "crear_publicacion.html",
+            {
+                "publicacion_form": publicacion_form,
+                "multimedia_form": multimedia_form,
+            },
+        )

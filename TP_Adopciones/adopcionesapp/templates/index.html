@@ -1,80 +1,36 @@
 {% extends "base.html" %}
-{% load static %}
 {% block title %}Publicaciones{% endblock %}
+{% load static %}
+
 {% block content %}
 <h2>🐾 Animales en adopción</h2>
 
-<div class="publicaciones-list">
-    {% for pub in publicaciones %}
-    <div class="card mb-4">
-        <div class="row g-4 mt-3 mb-3">
-            {% if pub.multimedia.all %}
-            <div class="col-md-4">
-                <div id="carousel{{ forloop.counter }}" class="carousel slide" data-bs-ride="carousel">
-                    <div class="carousel-inner">
-                        {% for media in pub.multimedia.all %}
-                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                            {% if media.tipo == "imagen" %}
-                            <img src="{{ media.archivo.url }}" class="d-block w-50 rounded-start"
-                                alt="{{ pub.nombre }}">
-                            {% elif media.tipo == "video" %}
-                            <video controls class="d-block w-50 rounded-start">
-                                <source src="{{ media.archivo.url }}" type="video/mp4">
-                                Tu navegador no soporta la reproducción de videos.
-                            </video>
-                            {% endif %}
-                        </div>
-                        {% endfor %}
-                    </div>
-                    {% if pub.multimedia.count > 1 %}
-                    <button class="carousel-control-prev" type="button" data-bs-target="#carousel{{ forloop.counter }}"
-                        data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Anterior</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#carousel{{ forloop.counter }}"
-                        data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Siguiente</span>
-                    </button>
-                    {% endif %}
-                </div>
-            </div>
-            {% endif %}
-            <div class="col-md-8">
-                <div class="card-body d-flex justify-content-center align-items-center">
-                    <div class="datos_izquierda flex-fill pe-3">
-                        <p><strong>Nombre: </strong>{{ pub.nombre }}</p>
-                        <p><strong>Edad: </strong>{{ pub.edad }} años</p>
-                        <p><strong>Raza: </strong>{{ pub.raza }}</p>
-                    </div>
-
-                    <div class="datos_derecha flex-fill ps-3">
-                        <p><strong>Sexo: </strong>{{ pub.sexo }}</p>
-                        <p><strong>Castrado: </strong>{% if pub.castrado %}Sí{% else %}No{% endif %}</p>
-
-                        {% if pub.vacunas %}
-                        <div class="dropdown">
-                            <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                Vacunas
-                            </button>
-                            <ul class="dropdown-menu">
-                                {% for vacuna in pub.vacunas %}
-                                <li><a class="dropdown-item disabled" href="#">{{ vacuna }}</a></li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                        {% else %}
-                        <p>No tiene vacunas</p>
-                        {% endif %}
-                    </div>
-                </div>
-                <a href="{% url 'publicaciones_detail' pub.pk %}" class="btn btn-success mt-2 mb-2">Ver más detalles</a>
-            </div>
+<form id="filtros-form" class="mb-4">
+    <div class="row">
+        <div class="col"><input type="text" name="raza" class="form-control" placeholder="Raza"></div>
+        <div class="col">
+            <select name="sexo" class="form-control">
+                <option value="">---Sexo---</option>
+                <option value="M">Macho</option>
+                <option value="H">Hembra</option>
+            </select>
+        </div>
+        <div class="col"><input type="number" name="edad" class="form-control" placeholder="Edad"></div>
+        <div class="col">
+            <select name="castrado" class="form-control">
+                <option value="">---Castrado---</option>
+                <option value="true">Sí</option>
+                <option value="false">No</option>
+            </select>
+        </div>
+        <div class="col"><button type="submit" class="btn btn-primary">Filtrar</button></div>
+        <div class="col">
+            <button type="button" id="reset-filtros" class="btn btn-secondary">Borrar filtros</button>
         </div>
     </div>
-    {% empty %}
-    <p>No hay publicaciones disponibles.</p>
-    {% endfor %}
+</form>
+
+<div id="publicaciones-container">
+    {% include "partials/publicaciones_list.html" %}
 </div>
 {% endblock %}

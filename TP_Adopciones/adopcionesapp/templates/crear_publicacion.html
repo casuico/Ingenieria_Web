@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h2 class="card-title mb-4 text-center">Crear Publicación</h2>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <!-- Publicación -->
+                <fieldset class="mb-4">
+                    <legend class="h5 mb-3">Datos del Animal</legend>
+                    <div class="row g-3">
+                        {% for field in publicacion_form %}
+                        <div class="col-md-6">
+                            <label class="form-label">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.help_text %}
+                            <div class="form-text">{{ field.help_text }}</div>
+                            {% endif %}
+                            {% for error in field.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% if publicacion_form.non_field_errors %}
+                    {% for error in publicacion_form.non_field_errors %}
+                    <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+                    {% endif %}
+                </fieldset>
+
+                <!-- Multimedia -->
+                <fieldset class="mb-4">
+                    <legend class="h5 mb-3">Multimedia</legend>
+                    {{ multimedia_form.non_field_errors }}
+                    <div class="mb-2">{{ multimedia_form.archivo1 }}</div>
+                    <div class="mb-2">{{ multimedia_form.archivo2 }}</div>
+                    <div class="mb-2">{{ multimedia_form.archivo3 }}</div>
+                </fieldset>
+
+
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-success btn-lg">Crear Publicación</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

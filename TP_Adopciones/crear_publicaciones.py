@@ -29,7 +29,6 @@ Publicacion.objects.create(
     condiciones_adopcion="Debe tener espacio para correr y paseos diarios",
     historia="Rescatado de la calle",
     recomendaciones_cuidado="Alimentación balanceada y paseos diarios",
-    contacto="contacto@refugio.com"
 )
 
 Publicacion.objects.create(
@@ -48,7 +47,6 @@ Publicacion.objects.create(
     condiciones_adopcion="Necesita espacio interior y compañía",
     historia="Adoptado temporalmente por familia",
     recomendaciones_cuidado="Proporcionar rascadores y juguetes",
-    contacto="contacto@refugio.com"
 )
 
 Publicacion.objects.create(
@@ -67,7 +65,6 @@ Publicacion.objects.create(
     condiciones_adopcion="Requiere jaula amplia y supervisión diaria",
     historia="Rescatado de granja",
     recomendaciones_cuidado="Atención diaria y alimentación específica",
-    contacto="contacto@refugio.com"
 )
 
 Publicacion.objects.create(
@@ -86,7 +83,6 @@ Publicacion.objects.create(
     condiciones_adopcion="Necesita patio y compañía diaria",
     historia="Rescatada de abandono",
     recomendaciones_cuidado="Ejercicios diarios y paseos",
-    contacto="contacto@refugio.com"
 )
 
 Publicacion.objects.create(
@@ -105,7 +101,6 @@ Publicacion.objects.create(
     condiciones_adopcion="Espacio amplio y cariño",
     historia="Encontrado en la calle",
     recomendaciones_cuidado="Juguetes y rascadores",
-    contacto="contacto@refugio.com"
 )
 
 print("Se eliminaron las publicaciones existentes y se crearon 5 nuevas con la misma imagen")
