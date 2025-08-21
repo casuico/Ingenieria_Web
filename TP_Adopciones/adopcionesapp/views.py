@@ -23,11 +23,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 def main_page(request):
-    publicaciones = Publicacion.objects.all()
+    publicaciones = Publicacion.objects.filter(estado="APR")
     return render(request, "index.html", {"publicaciones": publicaciones})
 
 def filter_publicaciones(request):
-    publicaciones = Publicacion.objects.all()
+    publicaciones = Publicacion.objects.filter(estado="APR")
 
     edad = request.GET.get("edad")
     sexo = request.GET.get("sexo")
@@ -180,6 +180,7 @@ class CrearPublicacionView(LoginRequiredMixin, View):
         if publicacion_form.is_valid() and multimedia_form.is_valid():
             publicacion = publicacion_form.save(commit=False)
             publicacion.creador = request.user
+            publicacion.estado = "REV"
             publicacion.save()
 
             content_type_map = {"image": "imagen", "video": "video"}
@@ -205,7 +206,11 @@ class CrearPublicacionView(LoginRequiredMixin, View):
                             "multimedia_form": multimedia_form,
                         },
                     )
-            return redirect("publicaciones_detail", pk=publicacion.pk)
+            messages.success(
+                request,
+                "Tu publicación fue creada correctamente y será revisada por un administrador."
+            )
+            return redirect("main_page")
         
         return render(
             request,

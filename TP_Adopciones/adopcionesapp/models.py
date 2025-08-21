@@ -15,11 +15,17 @@ class Publicacion(models.Model):
         ('Conejo', 'Conejo'),
         ('Otro', 'Otro'),
     ]
+    ESTADOS = [
+        ("REV", "Revisión"),
+        ("APR", "Aprobada"),
+        ("SUS", "Suspendida"),
+    ]
     SEXO_CHOICES = [
         ('M', 'Macho'),
         ('H', 'Hembra'),
     ]
 
+    estado = models.CharField(max_length=3, choices=ESTADOS, default="REV")
     nombre = models.CharField(max_length=50, blank=False, null=False)
     tipo_animal = models.CharField(max_length=10, choices=TIPO_ANIMAL_CHOICES, blank=False, null=False)
     raza = models.CharField(max_length=50, blank=False, null=False)

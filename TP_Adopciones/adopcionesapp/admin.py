@@ -9,10 +9,11 @@ class MultimediaInline(admin.TabularInline):  # o admin.StackedInline para más 
 
 @admin.register(Publicacion)
 class PublicacionAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'tipo_animal', 'raza', 'edad')
+    list_display = ('nombre', 'tipo_animal', 'raza', 'edad', 'estado')
     search_fields = ('nombre', 'tipo_animal', 'raza', 'edad')
     list_filter = ('nombre', 'tipo_animal', 'raza', 'edad')
     inlines = [MultimediaInline]
+    list_editable = ("estado",)
 
 @admin.register(Consulta)
 class ConsultaAdmin(admin.ModelAdmin):
