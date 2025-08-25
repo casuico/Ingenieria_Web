@@ -25,30 +25,4 @@
     <button type="submit" class="btn btn-success">Enviar consulta</button>
     <a href="{% url 'publicaciones_detail' publicacion.pk %}" class="btn btn-secondary">Cancelar</a>
 </form>
-
-{% if messages %}
-{% for message in messages %}
-<!-- Modal de éxito -->
-<div class="modal fade" id="exitoModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">✅ Consulta enviada</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-            </div>
-            <div class="modal-body">
-                {{ message }}
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var exitoModal = new bootstrap.Modal(document.getElementById('exitoModal'));
-        exitoModal.show();
-    });
-</script>
-{% endfor %}
-{% endif %}
 {% endblock %}

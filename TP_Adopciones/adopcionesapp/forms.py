@@ -3,7 +3,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
-from .models import Publicacion
+from .models import Comentario, Publicacion
 
 
 
@@ -97,9 +97,6 @@ class PublicacionForm(forms.ModelForm):
             raise forms.ValidationError("La edad deber ser menor a 50 años")
         return edad
     
-
-from django import forms
-
 class MultimediaForm(forms.Form):
     archivo1 = forms.FileField(required=False, widget=forms.FileInput(attrs={"class": "form-control"}))
     archivo2 = forms.FileField(required=False, widget=forms.FileInput(attrs={"class": "form-control"}))
@@ -119,3 +116,18 @@ class MultimediaForm(forms.Form):
 
         cleaned_data['archivos'] = archivos
         return cleaned_data
+
+class ComentarioForm(forms.ModelForm):
+    class Meta:
+        model = Comentario
+        fields = ["texto"]
+        widgets = {
+            "texto": forms.Textarea(attrs={
+                "class": "form-control",
+                "rows": 3,
+                "placeholder": "Escribe tu comentario aquí..."
+            })
+        }
+        labels = {
+            "texto": ""
+        }

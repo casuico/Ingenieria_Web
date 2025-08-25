@@ -1,0 +1,33 @@
+<div class="card mt-4 shadow-sm">
+    <div class="card-body">
+        <h5 class="card-title">Comentarios</h5>
+
+        {% if comentarios %}
+        <ul class="list-group list-group-flush">
+            {% for comentario in comentarios %}
+            <li class="list-group-item">
+                <strong>{{ comentario.autor }}</strong>
+                <small class="text-muted">({{ comentario.creado|date:"d/m/Y H:i" }})</small>
+                <p class="mb-0">{{ comentario.texto }}</p>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="text-muted">Todavía no hay comentarios aprobados.</p>
+        {% endif %}
+
+        <hr>
+
+        {% if user.is_authenticated %}
+        <form method="post">
+            {% csrf_token %}
+            {{ comentario_form.as_p }}
+            <button type="submit" class="btn btn-sm btn-primary">Enviar comentario</button>
+        </form>
+        {% else %}
+        <a href="{% url 'login' %}?next={{ request.get_full_path }}" class="btn btn-sm btn-primary">
+            Iniciar sesión para comentar
+        </a>
+        {% endif %}
+    </div>
+</div>

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Publicacion, Consulta, Multimedia
+from .models import Comentario, Publicacion, Consulta, Multimedia
 
 
 class MultimediaInline(admin.TabularInline):  # o admin.StackedInline para más detalle
@@ -20,3 +20,10 @@ class ConsultaAdmin(admin.ModelAdmin):
     list_display = ('asunto', 'publicacion', 'usuario', 'nombre', 'email', 'creado')
     search_fields = ('asunto', 'publicacion', 'usuario', 'nombre', 'email', 'creado')
     list_filter = ('asunto', 'publicacion', 'usuario', 'nombre', 'email', 'creado')
+
+@admin.register(Comentario)
+class ComentarioAdmin(admin.ModelAdmin):
+    list_display = ("autor", "publicacion", "estado", "creado")
+    list_filter = ("estado", "creado")
+    search_fields = ("texto", "autor__username", "publicacion__nombre")
+    list_editable = ("estado",)

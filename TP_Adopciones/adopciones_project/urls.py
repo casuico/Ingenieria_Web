@@ -26,8 +26,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     #si en el primero parametro pongo home/ el resto de las urls tendran home al inicio
     path('', include('adopcionesapp.urls')),
-    path('login/', auth_views.LoginView.as_view( template_name='login.html', authentication_form=CustomAuthenticationForm, next_page='/' ), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(next_page='/'), name='logout'),
+    path('login/', auth_views.LoginView.as_view( template_name='login.html', authentication_form=CustomAuthenticationForm), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
 ]
 
 #IMAGENES

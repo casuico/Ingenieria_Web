@@ -3,7 +3,7 @@ from django.forms import ValidationError
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Publicacion, Consulta, Multimedia
 from django.contrib.auth.decorators import login_required
-from .forms import RegistroForm
+from .forms import ComentarioForm, RegistroForm
 from django.contrib.auth import login
 from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
@@ -52,7 +52,29 @@ def filter_publicaciones(request):
 
 def publicaciones_detail(request, pk):
     publicacion = get_object_or_404(Publicacion, pk=pk)
-    return render(request, "publicaciones_detail.html", {"publicacion": publicacion})
+    comentarios = publicacion.comentarios.filter(estado="aprobado").order_by("-creado")
+
+    if request.method == "POST":
+        if request.user.is_authenticated:
+            form = ComentarioForm(request.POST)
+            if form.is_valid():
+                comentario = form.save(commit=False)
+                comentario.publicacion = publicacion
+                comentario.autor = request.user
+                comentario.estado = "pendiente"
+                comentario.save()
+                messages.success(request, f"Tu comentario será revisado.")
+                return redirect("publicaciones_detail", pk=pk)
+        else:
+            form = ComentarioForm(request.POST)
+    else:
+        form = ComentarioForm()
+
+    return render(request, "publicaciones_detail.html", {
+        "publicacion": publicacion,
+        "comentarios": comentarios,
+        "comentario_form": form,
+    })
 
 
 def registro(request):
@@ -156,7 +178,7 @@ def consulta_animal(request, pk):
 
         messages.success(request, f"Tu consulta sobre '{publicacion.nombre}' fue enviada correctamente.")
 
-        return redirect('consulta_animal', pk=publicacion.pk)
+        return redirect('publicaciones_detail', pk=publicacion.pk)
 
     return render(request, "consulta_animal.html", {"publicacion": publicacion})
 

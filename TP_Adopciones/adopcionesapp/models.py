@@ -32,29 +32,23 @@ class Publicacion(models.Model):
     edad = models.PositiveIntegerField(help_text="Edad en años", blank=False, null=False)
     sexo = models.CharField(max_length=1, choices=SEXO_CHOICES, blank=False, null=False)
 
-    # Salud
     castrado = models.BooleanField(default=False, blank=False, null=False)
     enfermedades = models.TextField(blank=True, null=True)
     
-    # Vacunas como lista
-    vacunas = JSONField(default=list, blank=True, null=True)  # Lista de strings
+    vacunas = JSONField(default=list, blank=True, null=True)
 
-    # Comportamiento y compatibilidad
     compatibilidad_otros_animales = models.BooleanField(default=True)
     compatibilidad_ninos = models.BooleanField(default=True)
     comportamiento = models.TextField(blank=True, null=True)
 
-    # Ubicación y logística
     hogar_actual = models.CharField(max_length=100, blank=False, null=False)
     condiciones_adopcion = models.TextField(blank=False, null=False)
 
-    # Información adicional
     historia = models.TextField(blank=True, null=True)
     recomendaciones_cuidado = models.TextField(blank=True, null=True)
 
     creador = models.ForeignKey(User, on_delete=models.CASCADE, related_name="publicaciones")
 
-    # Timestamps
     creado = models.DateTimeField(auto_now_add=True)
     actualizado = models.DateTimeField(auto_now=True)
 
@@ -106,7 +100,6 @@ class Multimedia(models.Model):
         else:
             raise ValidationError("No se pudo determinar el tipo de archivo.")
 
-        # Validación por tipo
         if self.tipo == "imagen":
             if ext not in ['jpg', 'jpeg', 'png', 'gif']:
                 raise ValidationError(
@@ -117,3 +110,20 @@ class Multimedia(models.Model):
                 raise ValidationError(
                     "Extensión de archivo incorrecta, solo se permiten '.mp4', '.mov', '.avi', '.mkv', '.webm'."
                 )
+
+
+class Comentario(models.Model):
+    ESTADOS = [
+        ("pendiente", "Pendiente"),
+        ("aprobado", "Aprobado"),
+        ("rechazado", "Rechazado"),
+    ] 
+    
+    publicacion = models.ForeignKey(Publicacion, on_delete=models.CASCADE, related_name="comentarios")
+    autor = models.ForeignKey(User, on_delete=models.CASCADE)
+    texto = models.TextField(max_length=500, blank=False, null=False)
+    creado = models.DateTimeField(auto_now_add=True)
+    estado = models.CharField(max_length=10, choices=ESTADOS, default="pendiente")
+    
+    def __str__(self):
+        return f"Comentario de {self.autor} en {self.publicacion}"

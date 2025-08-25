@@ -40,7 +40,7 @@
                 </li>
                 {% else %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'login' %}">Ingresar</a>
+                    <a class="nav-link" href="{% url 'login' %}?next={{ request.get_full_path }}">Ingresar</a>
                 </li>
                 <li class="nav-item ms-3">
                     <a href="{% url 'crear_publicacion' %}" class="nav-link">Crear Publicación</a>
