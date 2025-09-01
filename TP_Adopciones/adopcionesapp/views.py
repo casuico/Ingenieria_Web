@@ -3,7 +3,7 @@ from django.forms import ValidationError
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Publicacion, Consulta, Multimedia
 from django.contrib.auth.decorators import login_required
-from .forms import ComentarioForm, RegistroForm
+from .forms import AnimalForm, ComentarioForm, RegistroForm
 from django.contrib.auth import login
 from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
@@ -23,11 +23,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 def main_page(request):
-    publicaciones = Publicacion.objects.filter(estado="APR")
+    publicaciones = Publicacion.objects.filter(estado="APR", animal__adoptado=False)
     return render(request, "index.html", {"publicaciones": publicaciones})
 
 def filter_publicaciones(request):
-    publicaciones = Publicacion.objects.filter(estado="APR")
+    publicaciones = Publicacion.objects.filter(estado="APR", animal__adoptado=False)
 
     edad = request.GET.get("edad")
     sexo = request.GET.get("sexo")
@@ -191,22 +191,26 @@ class CrearPublicacionView(LoginRequiredMixin, View):
             "crear_publicacion.html",
             {
                 "publicacion_form": PublicacionForm(),
+                "animal_form": AnimalForm(),
                 "multimedia_form": MultimediaForm(),
             },
         )
 
     def post(self, request):
         publicacion_form = PublicacionForm(request.POST)
+        animal_form = AnimalForm(request.POST)
         multimedia_form = MultimediaForm(request.POST, request.FILES)
 
-        if publicacion_form.is_valid() and multimedia_form.is_valid():
+        if publicacion_form.is_valid() and animal_form.is_valid() and multimedia_form.is_valid():
+            animal = animal_form.save()
+
             publicacion = publicacion_form.save(commit=False)
             publicacion.creador = request.user
             publicacion.estado = "REV"
+            publicacion.animal = animal
             publicacion.save()
 
             content_type_map = {"image": "imagen", "video": "video"}
-
             for archivo in multimedia_form.cleaned_data["archivos"]:
                 tipo = content_type_map.get(archivo.content_type.split("/")[0], "imagen")
                 multimedia = Multimedia(
@@ -220,11 +224,13 @@ class CrearPublicacionView(LoginRequiredMixin, View):
                 except ValidationError as e:
                     multimedia_form.add_error(None, e.messages)
                     publicacion.delete()
+                    animal.delete()
                     return render(
                         request,
                         "crear_publicacion.html",
                         {
                             "publicacion_form": publicacion_form,
+                            "animal_form": animal_form,
                             "multimedia_form": multimedia_form,
                         },
                     )
@@ -239,6 +245,7 @@ class CrearPublicacionView(LoginRequiredMixin, View):
             "crear_publicacion.html",
             {
                 "publicacion_form": publicacion_form,
+                "animal_form": animal_form,
                 "multimedia_form": multimedia_form,
             },
         )

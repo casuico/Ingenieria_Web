@@ -8,24 +8,19 @@ from cloudinary.models import CloudinaryResource
 from django.core.files.uploadedfile import InMemoryUploadedFile, TemporaryUploadedFile
 
 
-class Publicacion(models.Model):
+class Animal(models.Model):
     TIPO_ANIMAL_CHOICES = [
         ('Perro', 'Perro'),
         ('Gato', 'Gato'),
         ('Conejo', 'Conejo'),
         ('Otro', 'Otro'),
     ]
-    ESTADOS = [
-        ("REV", "Revisión"),
-        ("APR", "Aprobada"),
-        ("SUS", "Suspendida"),
-    ]
+
     SEXO_CHOICES = [
         ('M', 'Macho'),
         ('H', 'Hembra'),
     ]
 
-    estado = models.CharField(max_length=3, choices=ESTADOS, default="REV")
     nombre = models.CharField(max_length=50, blank=False, null=False)
     tipo_animal = models.CharField(max_length=10, choices=TIPO_ANIMAL_CHOICES, blank=False, null=False)
     raza = models.CharField(max_length=50, blank=False, null=False)
@@ -34,12 +29,29 @@ class Publicacion(models.Model):
 
     castrado = models.BooleanField(default=False, blank=False, null=False)
     enfermedades = models.TextField(blank=True, null=True)
-    
     vacunas = JSONField(default=list, blank=True, null=True)
 
     compatibilidad_otros_animales = models.BooleanField(default=True)
     compatibilidad_ninos = models.BooleanField(default=True)
     comportamiento = models.TextField(blank=True, null=True)
+
+    # Nuevo campo: saber si fue adoptado
+    adoptado = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.nombre} ({self.tipo_animal})"
+
+
+class Publicacion(models.Model):
+    ESTADOS = [
+        ("REV", "Revisión"),
+        ("APR", "Aprobada"),
+        ("SUS", "Suspendida"),
+    ]
+
+    titulo = models.CharField(max_length=100, blank=False, null=False)
+    estado = models.CharField(max_length=3, choices=ESTADOS, default="REV")
+    animal = models.OneToOneField(Animal, on_delete=models.CASCADE, related_name="publicacion")
 
     hogar_actual = models.CharField(max_length=100, blank=False, null=False)
     condiciones_adopcion = models.TextField(blank=False, null=False)
@@ -53,7 +65,7 @@ class Publicacion(models.Model):
     actualizado = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.nombre} ({self.tipo_animal})"
+        return f"Publicación de {self.animal.nombre} ({self.animal.tipo_animal})"
 
 
 class Consulta(models.Model):
@@ -84,7 +96,7 @@ class Multimedia(models.Model):
     archivo = CloudinaryField(resource_type="auto", blank=False, null=False)
 
     def __str__(self):
-        return f"{self.tipo} de {self.publicacion.nombre}"
+        return f"{self.tipo} de {self.publicacion.titulo}"
     
 
     def clean(self):

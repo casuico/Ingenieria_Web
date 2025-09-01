@@ -2,13 +2,17 @@
 <div class="card mb-4">
     <div class="row g-4 mt-3 mb-3">
         {% if pub.multimedia.all %}
+        <div class="col-12 text-center mb-3 mt-0">
+            <h2 class="fw-bold fs-4">{{ pub.titulo }}</h2>
+        </div>
         <div class="col-md-4">
             <div id="carousel{{ forloop.counter }}" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-inner">
                     {% for media in pub.multimedia.all %}
                     <div class="carousel-item {% if forloop.first %}active{% endif %}">
                         {% if media.tipo == "imagen" %}
-                        <img src="{{ media.archivo.url }}" class="d-block w-50 rounded-start" alt="{{ pub.nombre }}">
+                        <img src="{{ media.archivo.url }}" class="d-block w-50 rounded-start"
+                            alt="{{ pub.animal.nombre }}">
                         {% elif media.tipo == "video" %}
                         <video controls class="d-block w-50 rounded-start">
                             <source src="{{ media.archivo.url }}" type="video/mp4">
@@ -33,20 +37,20 @@
         <div class="col-md-8">
             <div class="card-body d-flex justify-content-center align-items-center">
                 <div class="datos_izquierda flex-fill pe-3">
-                    <p><strong>Nombre: </strong>{{ pub.nombre }}</p>
-                    <p><strong>Edad: </strong>{{ pub.edad }} años</p>
-                    <p><strong>Raza: </strong>{{ pub.raza }}</p>
+                    <p><strong>Nombre: </strong>{{ pub.animal.nombre }}</p>
+                    <p><strong>Edad: </strong>{{ pub.animal.edad }} años</p>
+                    <p><strong>Raza: </strong>{{ pub.animal.raza }}</p>
                 </div>
                 <div class="datos_derecha flex-fill ps-3">
-                    <p><strong>Sexo: </strong>{{ pub.sexo }}</p>
-                    <p><strong>Castrado: </strong>{% if pub.castrado %}Sí{% else %}No{% endif %}</p>
-                    {% if pub.vacunas %}
+                    <p><strong>Sexo: </strong>{{ pub.animal.sexo }}</p>
+                    <p><strong>Castrado: </strong>{% if pub.animal.castrado %}Sí{% else %}No{% endif %}</p>
+                    {% if pub.animal.vacunas %}
                     <div class="dropdown">
                         <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
                             Vacunas
                         </button>
                         <ul class="dropdown-menu">
-                            {% for vacuna in pub.vacunas %}
+                            {% for vacuna in pub.animal.vacunas %}
                             <li><a class="dropdown-item disabled" href="#">{{ vacuna }}</a></li>
                             {% endfor %}
                         </ul>

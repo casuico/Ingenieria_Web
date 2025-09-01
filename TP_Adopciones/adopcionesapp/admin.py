@@ -1,17 +1,24 @@
 from django.contrib import admin
-from .models import Comentario, Publicacion, Consulta, Multimedia
+from .models import Animal, Comentario, Publicacion, Consulta, Multimedia
 
 
-class MultimediaInline(admin.TabularInline):  # o admin.StackedInline para más detalle
+class MultimediaInline(admin.TabularInline):
     model = Multimedia
-    extra = 1  # cuántos formularios vacíos mostrar por defecto
-    fields = ("tipo", "archivo")  # qué campos mostrar
+    extra = 1 
+    fields = ("tipo", "archivo")
+
+@admin.register(Animal)
+class AnimalAdmin(admin.ModelAdmin):
+    list_display = ('nombre', 'tipo_animal', 'raza', 'edad', 'adoptado')
+    search_fields = ('nombre', 'raza')
+    list_filter = ('tipo_animal', 'adoptado')
+    list_editable = ("adoptado",)
 
 @admin.register(Publicacion)
 class PublicacionAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'tipo_animal', 'raza', 'edad', 'estado')
-    search_fields = ('nombre', 'tipo_animal', 'raza', 'edad')
-    list_filter = ('nombre', 'tipo_animal', 'raza', 'edad')
+    list_display = ('animal', 'estado', 'creado')
+    search_fields = ('animal__nombre', 'animal__raza')
+    list_filter = ('estado', 'animal__tipo_animal', 'animal__raza', 'animal__edad')
     inlines = [MultimediaInline]
     list_editable = ("estado",)
 
