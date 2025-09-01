@@ -42,13 +42,13 @@
             {% endif %}
 
             <div class="card-body">
-                <h2 class="card-title">{{ publicacion.nombre }}</h2>
+                <h2 class="card-title">{{ publicacion.animal.nombre }}</h2>
                 <p class="mb-1">
-                    <span class="badge bg-primary">{{ publicacion.tipo_animal }}</span>
-                    <span class="badge bg-secondary">{{ publicacion.raza }}</span>
-                    <span class="badge bg-info text-dark">{{ publicacion.edad }} años</span>
+                    <span class="badge bg-primary">{{ publicacion.animal.tipo_animal }}</span>
+                    <span class="badge bg-secondary">{{ publicacion.animal.raza }}</span>
+                    <span class="badge bg-info text-dark">{{ publicacion.animal.edad }} años</span>
                     <span class="badge bg-warning text-dark">
-                        {% if publicacion.sexo == "M" %}Macho{% else %}Hembra{% endif %}
+                        {% if publicacion.animal.sexo == "M" %}Macho{% else %}Hembra{% endif %}
                     </span>
                 </p>
 
@@ -56,12 +56,12 @@
 
                 <h5>Salud</h5>
                 <ul>
-                    <li>Castrado: {{ publicacion.castrado|yesno:"Sí,No" }}</li>
-                    <li>Enfermedades: {{ publicacion.enfermedades|default:"Ninguna conocida" }}</li>
+                    <li>Castrado: {{ publicacion.animal.castrado|yesno:"Sí,No" }}</li>
+                    <li>Enfermedades: {{ publicacion.animal.enfermedades|default:"Ninguna conocida" }}</li>
                     <li>Vacunas:
-                        {% if publicacion.vacunas %}
+                        {% if publicacion.animal.vacunas %}
                         <ul>
-                            {% for v in publicacion.vacunas %}
+                            {% for v in publicacion.animal.vacunas %}
                             <li>{{ v }}</li>
                             {% endfor %}
                         </ul>

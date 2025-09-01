@@ -1,8 +1,8 @@
 {% extends "base.html" %}
-{% block title %}Consulta sobre {{ publicacion.nombre }}{% endblock %}
+{% block title %}Consulta sobre {{ publicacion.animal.nombre }}{% endblock %}
 
 {% block content %}
-<h2 class="mb-4">Consulta sobre {{ publicacion.nombre }}</h2>
+<h2 class="mb-4">Consulta sobre {{ publicacion.animal.nombre }}</h2>
 
 <form method="post">
     {% csrf_token %}
