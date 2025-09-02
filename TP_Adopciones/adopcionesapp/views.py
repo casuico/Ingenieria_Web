@@ -3,7 +3,7 @@ from django.forms import ValidationError
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Publicacion, Consulta, Multimedia
 from django.contrib.auth.decorators import login_required
-from .forms import AnimalForm, ComentarioForm, RegistroForm
+from .forms import AnimalForm, ComentarioForm, PublicacionEditarForm, RegistroForm
 from django.contrib.auth import login
 from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
@@ -23,11 +23,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 def main_page(request):
-    publicaciones = Publicacion.objects.filter(estado="APR", animal__adoptado=False)
+    publicaciones = Publicacion.objects.filter(estado="APR", adoptado=False)
     return render(request, "index.html", {"publicaciones": publicaciones})
 
 def filter_publicaciones(request):
-    publicaciones = Publicacion.objects.filter(estado="APR", animal__adoptado=False)
+    publicaciones = Publicacion.objects.filter(estado="APR", adoptado=False)
 
     edad = request.GET.get("edad")
     sexo = request.GET.get("sexo")
@@ -185,6 +185,7 @@ def consulta_animal(request, pk):
 
 
 class CrearPublicacionView(LoginRequiredMixin, View):
+
     def get(self, request):
         return render(
             request,
@@ -249,3 +250,51 @@ class CrearPublicacionView(LoginRequiredMixin, View):
                 "multimedia_form": multimedia_form,
             },
         )
+    
+
+@login_required
+def mis_publicaciones(request):
+    publicaciones = request.user.publicaciones.all()
+    return render(request, "mis_publicaciones.html", {"publicaciones": publicaciones})
+
+@login_required
+def editar_publicacion(request, pk):
+    publicacion = get_object_or_404(Publicacion, pk=pk, creador=request.user)
+    animal = publicacion.animal
+
+    if request.method == "POST":
+        publicacion_form = PublicacionEditarForm(request.POST, instance=publicacion)
+        animal_form = AnimalForm(request.POST, instance=animal)
+        multimedia_form = MultimediaForm(request.POST, request.FILES, publicacion=publicacion)
+
+        if publicacion_form.is_valid() and animal_form.is_valid() and multimedia_form.is_valid():
+            animal_form.save()
+            publicacion_form.save()
+
+            content_type_map = {"image": "imagen", "video": "video"}
+            for archivo in multimedia_form.cleaned_data.get("archivos", []):
+                tipo = content_type_map.get(archivo.content_type.split("/")[0], "imagen")
+                Multimedia.objects.create(
+                    publicacion=publicacion,
+                    archivo=archivo,
+                    tipo=tipo
+                )
+
+            messages.success(request, "Tu publicación fue actualizada correctamente.")
+            return redirect("mis_publicaciones")
+    else:
+        publicacion_form = PublicacionEditarForm(instance=publicacion)
+        animal_form = AnimalForm(instance=animal)
+        multimedia_form = MultimediaForm()
+
+    return render(
+        request,
+        "editar_publicacion.html",
+        {
+            "publicacion_form": publicacion_form,
+            "animal_form": animal_form,
+            "multimedia_form": multimedia_form,
+            "publicacion": publicacion
+        }
+    )
+

@@ -29,14 +29,11 @@ class Animal(models.Model):
 
     castrado = models.BooleanField(default=False, blank=False, null=False)
     enfermedades = models.TextField(blank=True, null=True)
-    vacunas = JSONField(default=list, blank=True, null=True)
+    vacunas = models.TextField(blank=True, null=True)
 
     compatibilidad_otros_animales = models.BooleanField(default=True)
     compatibilidad_ninos = models.BooleanField(default=True)
     comportamiento = models.TextField(blank=True, null=True)
-
-    # Nuevo campo: saber si fue adoptado
-    adoptado = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.nombre} ({self.tipo_animal})"
@@ -63,6 +60,9 @@ class Publicacion(models.Model):
 
     creado = models.DateTimeField(auto_now_add=True)
     actualizado = models.DateTimeField(auto_now=True)
+
+    adoptado = models.BooleanField(default=False)
+
 
     def __str__(self):
         return f"Publicación de {self.animal.nombre} ({self.animal.tipo_animal})"
@@ -108,7 +108,7 @@ class Multimedia(models.Model):
         if isinstance(self.archivo, CloudinaryResource):
             ext = self.archivo.format.lower()
         elif isinstance(self.archivo, (InMemoryUploadedFile, TemporaryUploadedFile)):
-            ext = os.path.splitext(self.archivo.name)[1].lower().lstrip(".")  # quitar el punto
+            ext = os.path.splitext(self.archivo.name)[1].lower().lstrip(".")
         else:
             raise ValidationError("No se pudo determinar el tipo de archivo.")
 

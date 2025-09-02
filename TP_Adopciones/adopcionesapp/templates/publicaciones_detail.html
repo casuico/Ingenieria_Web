@@ -60,11 +60,7 @@
                     <li>Enfermedades: {{ publicacion.animal.enfermedades|default:"Ninguna conocida" }}</li>
                     <li>Vacunas:
                         {% if publicacion.animal.vacunas %}
-                        <ul>
-                            {% for v in publicacion.animal.vacunas %}
-                            <li>{{ v }}</li>
-                            {% endfor %}
-                        </ul>
+                        {{ publicacion.animal.vacunas }}
                         {% else %}
                         Ninguna registrada
                         {% endif %}

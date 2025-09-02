@@ -45,16 +45,7 @@
                     <p><strong>Sexo: </strong>{{ pub.animal.sexo }}</p>
                     <p><strong>Castrado: </strong>{% if pub.animal.castrado %}Sí{% else %}No{% endif %}</p>
                     {% if pub.animal.vacunas %}
-                    <div class="dropdown">
-                        <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                            Vacunas
-                        </button>
-                        <ul class="dropdown-menu">
-                            {% for vacuna in pub.animal.vacunas %}
-                            <li><a class="dropdown-item disabled" href="#">{{ vacuna }}</a></li>
-                            {% endfor %}
-                        </ul>
-                    </div>
+                    <p><strong>Vacunas:</strong> {{ pub.animal.vacunas }}</p>
                     {% else %}
                     <p>No tiene vacunas</p>
                     {% endif %}

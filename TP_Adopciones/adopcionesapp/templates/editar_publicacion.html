@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h2 class="card-title mb-4 text-center">Editar Publicación</h2>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <!-- Carrusel de Multimedia existente -->
+                {% if publicacion.multimedia.all %}
+                <div id="carouselEdit" class="carousel slide my-3" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        {% for media in publicacion.multimedia.all %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            {% if media.tipo == "imagen" %}
+                            <img src="{{ media.archivo.url }}" class="d-block mx-auto"
+                                style="width: 300px; height: 300px; object-fit: cover;"
+                                alt="{{ publicacion.animal.nombre }}">
+                            {% elif media.tipo == "video" %}
+                            <video controls class="d-block mx-auto"
+                                style="width: 300px; height: 300px; object-fit: cover;">
+                                <source src="{{ media.archivo.url }}" type="video/mp4">
+                                Tu navegador no soporta la reproducción de videos.
+                            </video>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% if publicacion.multimedia.count > 1 %}
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselEdit"
+                        data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" style="background-color: black; border-radius: 30%;"
+                            aria-hidden="true"></span>
+                        <span class="visually-hidden">Anterior</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselEdit"
+                        data-bs-slide="next">
+                        <span class="carousel-control-next-icon" style="background-color: black; border-radius: 30%;"
+                            aria-hidden="true"></span>
+                        <span class="visually-hidden">Siguiente</span>
+                    </button>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <!-- Datos del Animal -->
+                <fieldset class="mb-4">
+                    <legend class="h5 mb-3">Datos del Animal</legend>
+                    <div class="row g-3">
+                        {% for field in animal_form %}
+                        <div class="col-md-6">
+                            <label class="form-label">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.help_text %}
+                            <div class="form-text">{{ field.help_text }}</div>
+                            {% endif %}
+                            {% for error in field.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% if animal_form.non_field_errors %}
+                    {% for error in animal_form.non_field_errors %}
+                    <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+                    {% endif %}
+                </fieldset>
+
+                <!-- Datos de la Publicación -->
+                <fieldset class="mb-4">
+                    <legend class="h5 mb-3">Datos de la Publicación</legend>
+                    <div class="row g-3">
+                        {% for field in publicacion_form %}
+                        <div class="col-md-6">
+                            <label class="form-label">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.help_text %}
+                            <div class="form-text">{{ field.help_text }}</div>
+                            {% endif %}
+                            {% for error in field.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% if publicacion_form.non_field_errors %}
+                    {% for error in publicacion_form.non_field_errors %}
+                    <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+                    {% endif %}
+                </fieldset>
+
+                <!-- Multimedia (opcional: mostrar campos de subida si quieres permitir cambios) -->
+                <fieldset class="mb-4">
+                    <legend class="h5 mb-3">Multimedia</legend>
+                    {{ multimedia_form.non_field_errors }}
+                    <div class="mb-2">{{ multimedia_form.archivo1 }}</div>
+                    <div class="mb-2">{{ multimedia_form.archivo2 }}</div>
+                    <div class="mb-2">{{ multimedia_form.archivo3 }}</div>
+                </fieldset>
+
+                <div class="d-flex justify-content-between">
+                    <a href="{% url 'mis_publicaciones' %}" class="btn btn-secondary">Cancelar</a>
+                    <button type="submit" class="btn btn-primary btn-lg">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

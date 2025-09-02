@@ -28,6 +28,9 @@
                 <li class="nav-item ms-3">
                     <a href="{% url 'crear_publicacion' %}" class="nav-link">Crear Publicación</a>
                 </li>
+                <li class="nav-item ms-3">
+                    <a href="{% url 'mis_publicaciones' %}" class="nav-link">Mis Publicaciones</a>
+                </li>
                 {% if user.is_superuser %}
                 <li class="nav-item ms-3">
                     <a class="nav-link" href="{% url 'admin:index' %}">Panel de Administración</a>

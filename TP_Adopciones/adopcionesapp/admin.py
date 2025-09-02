@@ -9,10 +9,9 @@ class MultimediaInline(admin.TabularInline):
 
 @admin.register(Animal)
 class AnimalAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'tipo_animal', 'raza', 'edad', 'adoptado')
+    list_display = ('nombre', 'tipo_animal', 'raza', 'edad')
     search_fields = ('nombre', 'raza')
-    list_filter = ('tipo_animal', 'adoptado')
-    list_editable = ("adoptado",)
+    list_filter = ('tipo_animal', 'edad')
 
 @admin.register(Publicacion)
 class PublicacionAdmin(admin.ModelAdmin):
