@@ -35,13 +35,13 @@ def filter_publicaciones(request):
     castrado = request.GET.get("castrado")
 
     if edad:
-        publicaciones = publicaciones.filter(edad=edad)
+        publicaciones = publicaciones.filter(animal__edad=edad)
     if sexo:
-        publicaciones = publicaciones.filter(sexo=sexo)
+        publicaciones = publicaciones.filter(animal__sexo=sexo)
     if raza:
-        publicaciones = publicaciones.filter(raza__icontains=raza)
+        publicaciones = publicaciones.filter(animal__raza__icontains=raza)
     if castrado:
-        publicaciones = publicaciones.filter(castrado=(castrado.lower() == "true"))
+        publicaciones = publicaciones.filter(animal__castrado=(castrado.lower() == "true"))
 
     if request.headers.get("x-requested-with") == "XMLHttpRequest":
         return render(request, "partials/publicaciones_list.html", {"publicaciones": publicaciones})
