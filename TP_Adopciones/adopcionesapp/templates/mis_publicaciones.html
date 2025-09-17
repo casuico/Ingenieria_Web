@@ -57,8 +57,18 @@
                         {% endif %}
                     </div>
                 </div>
-                <!-- Botón Editar en lugar de "Ver más detalles" -->
                 <a href="{% url 'editar_publicacion' pub.pk %}" class="btn btn-warning mt-2 mb-2">Editar</a>
+
+
+                <form method="POST" class="d-inline">
+                    {% csrf_token %}
+                    <input type="hidden" name="publicacion_id" value="{{ pub.pk }}">
+                    {% if pub.adoptado %}
+                    <button type="submit" class="btn btn-danger mt-2 mb-2">Marcar como No Adoptado</button>
+                    {% else %}
+                    <button type="submit" class="btn btn-success mt-2 mb-2">Marcar como Adoptado</button>
+                    {% endif %}
+                </form>
             </div>
         </div>
     </div>

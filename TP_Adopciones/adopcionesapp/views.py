@@ -254,6 +254,16 @@ class CrearPublicacionView(LoginRequiredMixin, View):
 
 @login_required
 def mis_publicaciones(request):
+    if request.method == "POST":
+        pub_id = request.POST.get("publicacion_id")
+
+        publicacion = request.user.publicaciones.get(pk=pub_id)
+        publicacion.adoptado = not publicacion.adoptado
+        publicacion.save()
+        messages.success(request, f"La publicación {publicacion.titulo} fue marcado como adoptado.")
+        return redirect("/")
+
+
     publicaciones = request.user.publicaciones.all()
     return render(request, "mis_publicaciones.html", {"publicaciones": publicaciones})
 
