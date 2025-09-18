@@ -1,5 +1,14 @@
 {% for pub in publicaciones %}
-<div class="card mb-4">
+<div class="card mb-4 position-relative">
+    <!-- LOGO DE EMPRESA -->
+    {% if pub.creador.perfil.archivo %}
+    <div class="logo-empresa" style="position: absolute; top: 10px; left: 10px; z-index: 10;">
+        <img src="{{ pub.creador.perfil.archivo.url }}" alt="Logo empresa" class="rounded-circle shadow-sm" width="60"
+            height="60">
+    </div>
+    {% endif %}
+    <!-- FIN LOGO -->
+
     <div class="row g-4 mt-3 mb-3">
         {% if pub.multimedia.all %}
         <div class="col-12 text-center mb-3 mt-0">

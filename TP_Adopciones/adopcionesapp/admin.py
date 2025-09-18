@@ -1,5 +1,8 @@
 from django.contrib import admin
-from .models import Animal, Comentario, Publicacion, Consulta, Multimedia
+from .models import Animal, Comentario, Publicacion, Consulta, Multimedia, Perfil
+from django.contrib.auth.models import User
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+
 
 
 class MultimediaInline(admin.TabularInline):
@@ -33,3 +36,25 @@ class ComentarioAdmin(admin.ModelAdmin):
     list_filter = ("estado", "creado")
     search_fields = ("texto", "autor__username", "publicacion__nombre")
     list_editable = ("estado",)
+
+class PerfilInline(admin.StackedInline):
+    model = Perfil
+    can_delete = False
+    verbose_name_plural = "Perfil"
+    fk_name = "user"
+
+
+class UserAdmin(BaseUserAdmin):
+    inlines = (PerfilInline,)
+    list_display = ("username", "email", "first_name", "last_name", "is_active", "get_rol")
+    list_editable = ("is_active",)
+    list_filter = ("is_active", "perfil__rol")
+
+    def get_rol(self, obj):
+        return obj.perfil.rol
+    get_rol.short_description = "Rol"
+
+
+# Re-registramos el User con nuestro admin personalizado
+admin.site.unregister(User)
+admin.site.register(User, UserAdmin)

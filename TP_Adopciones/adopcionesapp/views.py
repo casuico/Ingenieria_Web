@@ -308,3 +308,19 @@ def editar_publicacion(request, pk):
         }
     )
 
+@login_required
+def perfil_usuario(request):
+    usuario = request.user
+    perfil = usuario.perfil
+
+    if request.method == "POST" and perfil.rol == "empresa":
+        archivo = request.FILES.get("archivo")
+        if archivo:
+            perfil.archivo = archivo
+            perfil.save()
+            messages.success(request, "El logo de la empresa se actualizó correctamente.")
+        else:
+            messages.error(request, "Debes seleccionar un archivo para subir.")
+        return redirect("perfil_usuario")
+
+    return render(request, "perfil_usuario.html", {"usuario": usuario})

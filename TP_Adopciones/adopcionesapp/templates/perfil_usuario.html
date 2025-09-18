@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h2 class="card-title mb-4 text-center">Perfil de Usuario</h2>
+            <p><strong>Nombre de usuario:</strong> {{ usuario.username }}</p>
+            <p><strong>Email:</strong> {{ usuario.email }}</p>
+            <p><strong>Nombre:</strong> {{ usuario.first_name }}</p>
+            <p><strong>Apellido:</strong> {{ usuario.last_name }}</p>
+            <p><strong>Último acceso:</strong> {{ usuario.last_login|date:"d/m/Y H:i" }}</p>
+            <p><strong>Fecha de registro:</strong> {{ usuario.date_joined|date:"d/m/Y H:i" }}</p>
+
+            {% if usuario.perfil.rol == "empresa" %}
+            <hr>
+            <h3 class="mt-4">Logo de la Empresa</h3>
+
+            {% if usuario.perfil.archivo %}
+            <p>Logo actual:</p>
+            <img src="{{ usuario.perfil.archivo.url }}" alt="Logo empresa" width="150">
+            {% endif %}
+
+            <form method="POST" enctype="multipart/form-data" action="{% url 'perfil_usuario' %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="id_archivo" class="form-label">Subir nuevo logo</label>
+                    <input type="file" name="archivo" id="id_archivo" class="form-control">
+                </div>
+                <button type="submit" class="btn btn-primary">Actualizar Logo</button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
