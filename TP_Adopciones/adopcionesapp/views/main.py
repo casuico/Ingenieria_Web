@@ -1,11 +1,22 @@
+"""
+Vistas principales de la aplicación: página de inicio y filtrado de publicaciones.
+"""
+
 from django.shortcuts import render
 from ..models import Publicacion
 
 def main_page(request):
+    """
+    Muestra la página principal con todas las publicaciones aprobadas y no adoptadas.
+    """
     publicaciones = Publicacion.objects.filter(estado="APR", adoptado=False)
     return render(request, "index.html", {"publicaciones": publicaciones})
 
 def filter_publicaciones(request):
+    """
+    Filtra las publicaciones según los parámetros recibidos por GET (edad, sexo, raza, castrado).
+    Si la petición es AJAX, retorna solo el listado parcial.
+    """
     publicaciones = Publicacion.objects.filter(estado="APR", adoptado=False)
 
     edad = request.GET.get("edad")
@@ -26,4 +37,3 @@ def filter_publicaciones(request):
         return render(request, "partials/publicaciones_list.html", {"publicaciones": publicaciones})
 
     return render(request, "index.html", {"publicaciones": publicaciones})
-

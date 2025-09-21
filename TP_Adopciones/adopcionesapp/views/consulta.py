@@ -1,3 +1,7 @@
+"""
+Vistas para gestionar las consultas de usuarios sobre publicaciones de animales.
+"""
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -8,6 +12,10 @@ from ..models import Publicacion, Consulta
 
 @login_required
 def consulta_animal(request, pk):
+    """
+    Permite a un usuario autenticado enviar una consulta sobre una publicación.
+    Envía un correo electrónico al creador de la publicación con los detalles de la consulta.
+    """
     publicacion = get_object_or_404(Publicacion, pk=pk)
 
     if request.method == "POST":
@@ -57,4 +65,3 @@ def consulta_animal(request, pk):
         return redirect('publicaciones_detail', pk=publicacion.pk)
 
     return render(request, "consulta_animal.html", {"publicacion": publicacion})
-

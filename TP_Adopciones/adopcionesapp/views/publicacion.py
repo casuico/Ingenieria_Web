@@ -1,3 +1,7 @@
+"""
+Vistas para la gestión de publicaciones: detalle, creación, edición y listado de publicaciones del usuario.
+"""
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -8,6 +12,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms import ValidationError
 
 def publicaciones_detail(request, pk):
+    """
+    Muestra el detalle de una publicación, incluyendo los comentarios aprobados.
+    Permite agregar un comentario si el usuario está autenticado.
+    """
     publicacion = get_object_or_404(Publicacion, pk=pk)
     comentarios = publicacion.comentarios.filter(estado="aprobado").order_by("-creado")
 
@@ -34,6 +42,10 @@ def publicaciones_detail(request, pk):
     })
 
 class CrearPublicacionView(LoginRequiredMixin, View):
+    """
+    Vista basada en clase para crear una nueva publicación de adopción.
+    Permite cargar datos del animal, la publicación y archivos multimedia.
+    """
     def get(self, request):
         return render(
             request,
@@ -101,6 +113,10 @@ class CrearPublicacionView(LoginRequiredMixin, View):
 
 @login_required
 def mis_publicaciones(request):
+    """
+    Muestra todas las publicaciones creadas por el usuario autenticado.
+    Permite marcar una publicación como adoptada o no adoptada.
+    """
     if request.method == "POST":
         pub_id = request.POST.get("publicacion_id")
 
@@ -115,6 +131,10 @@ def mis_publicaciones(request):
 
 @login_required
 def editar_publicacion(request, pk):
+    """
+    Permite al usuario autenticado editar una publicación propia y su animal asociado.
+    Permite agregar archivos multimedia adicionales.
+    """
     publicacion = get_object_or_404(Publicacion, pk=pk, creador=request.user)
     animal = publicacion.animal
 
@@ -153,4 +173,3 @@ def editar_publicacion(request, pk):
             "publicacion": publicacion
         }
     )
-

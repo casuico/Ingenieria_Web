@@ -1,3 +1,7 @@
+"""
+Vistas relacionadas con la autenticación de usuarios, registro, activación de cuenta y perfil.
+"""
+
 from django.core.mail import EmailMultiAlternatives
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
@@ -15,6 +19,10 @@ from ..forms import RegistroForm
 from ..models import Perfil
 
 def registro(request):
+    """
+    Vista para el registro de nuevos usuarios.
+    Envía un correo de activación al usuario registrado.
+    """
     if request.method == "POST":
         form = RegistroForm(request.POST)
         if form.is_valid():
@@ -49,6 +57,10 @@ def registro(request):
     return render(request, "registro.html", {"form": form})
 
 def activar_cuenta(request, uidb64, token):
+    """
+    Vista para activar la cuenta de usuario a través del enlace enviado por correo.
+    Si el token es válido, activa la cuenta y realiza login automático.
+    """
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
         user = User.objects.get(pk=uid)
@@ -65,6 +77,10 @@ def activar_cuenta(request, uidb64, token):
 
 @login_required
 def perfil_usuario(request):
+    """
+    Vista para mostrar y actualizar el perfil del usuario.
+    Permite a usuarios con rol 'empresa' subir o actualizar su logo.
+    """
     usuario = request.user
     perfil = usuario.perfil
 
@@ -79,4 +95,3 @@ def perfil_usuario(request):
         return redirect("perfil_usuario")
 
     return render(request, "perfil_usuario.html", {"usuario": usuario})
-
