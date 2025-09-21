@@ -3,8 +3,6 @@ from .models import Animal, Comentario, Publicacion, Consulta, Multimedia, Perfi
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
-
-
 class MultimediaInline(admin.TabularInline):
     model = Multimedia
     extra = 1 

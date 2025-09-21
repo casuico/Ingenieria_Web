@@ -1,8 +1,15 @@
+"""
+Modelo Publicacion para gestionar las publicaciones de animales en adopción.
+"""
+
 from django.db import models
 from django.contrib.auth.models import User
 from .animal import Animal
 
 class Publicacion(models.Model):
+    """
+    Modelo que representa una publicación de un animal en adopción.
+    """
     ESTADOS = [
         ("REV", "Revisión"),
         ("APR", "Aprobada"),

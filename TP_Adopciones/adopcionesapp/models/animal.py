@@ -1,7 +1,13 @@
+"""
+Modelo Animal para representar los datos de los animales en adopción.
+"""
+
 from django.db import models
 
 class Animal(models.Model):
-    # ...existing code...
+    """
+    Modelo que almacena la información básica de un animal disponible para adopción.
+    """
     TIPO_ANIMAL_CHOICES = [
         ('Perro', 'Perro'),
         ('Gato', 'Gato'),
@@ -26,4 +32,3 @@ class Animal(models.Model):
 
     def __str__(self):
         return f"{self.nombre} ({self.tipo_animal})"
-

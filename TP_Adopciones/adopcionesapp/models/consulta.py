@@ -1,9 +1,15 @@
+"""
+Modelo Consulta para almacenar las consultas realizadas sobre publicaciones.
+"""
+
 from django.db import models
 from django.contrib.auth.models import User
 from .publicacion import Publicacion
 
 class Consulta(models.Model):
-    # ...existing code...
+    """
+    Modelo que almacena las consultas de los usuarios sobre una publicación.
+    """
     publicacion = models.ForeignKey(Publicacion, on_delete=models.CASCADE)
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     nombre = models.CharField(max_length=100)
@@ -14,4 +20,3 @@ class Consulta(models.Model):
 
     def __str__(self):
         return self.asunto
-

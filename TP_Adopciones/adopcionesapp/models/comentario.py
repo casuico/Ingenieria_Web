@@ -1,9 +1,15 @@
+"""
+Modelo Comentario para gestionar los comentarios en publicaciones.
+"""
+
 from django.db import models
 from django.contrib.auth.models import User
 from .publicacion import Publicacion
 
 class Comentario(models.Model):
-    # ...existing code...
+    """
+    Modelo que almacena los comentarios realizados por los usuarios en una publicación.
+    """
     ESTADOS = [
         ("pendiente", "Pendiente"),
         ("aprobado", "Aprobado"),
@@ -17,4 +23,3 @@ class Comentario(models.Model):
 
     def __str__(self):
         return f"Comentario de {self.autor} en {self.publicacion}"
-

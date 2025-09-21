@@ -1,3 +1,7 @@
+"""
+Modelo Multimedia para gestionar archivos multimedia asociados a publicaciones.
+"""
+
 from django.db import models
 from cloudinary.models import CloudinaryField, CloudinaryResource
 from django.core.exceptions import ValidationError
@@ -6,7 +10,9 @@ import os
 from .publicacion import Publicacion
 
 class Multimedia(models.Model):
-    # ...existing code...
+    """
+    Modelo que almacena imágenes y videos asociados a una publicación.
+    """
     TIPO_CHOICES = [
         ('imagen', 'Imagen'),
         ('video', 'Video'),
@@ -23,7 +29,6 @@ class Multimedia(models.Model):
         return f"{self.tipo} de {self.publicacion.titulo}"
 
     def clean(self):
-        # ...existing code...
         super().clean()
         if not self.archivo:
             return
@@ -43,4 +48,3 @@ class Multimedia(models.Model):
                 raise ValidationError(
                     "Extensión de archivo incorrecta, solo se permiten '.mp4', '.mov', '.avi', '.mkv', '.webm'."
                 )
-

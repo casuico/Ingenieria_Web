@@ -1,3 +1,7 @@
+"""
+Modelo Perfil para almacenar información adicional de los usuarios.
+"""
+
 from django.db import models
 from django.contrib.auth.models import User
 from cloudinary.models import CloudinaryField
@@ -5,7 +9,9 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 class Perfil(models.Model):
-    # ...existing code...
+    """
+    Modelo que extiende la información del usuario con datos adicionales y rol.
+    """
     ROLES = (
         ("usuario", "Usuario"),
         ("empresa", "Empresa"),
@@ -19,8 +25,10 @@ class Perfil(models.Model):
 
 @receiver(post_save, sender=User)
 def crear_o_actualizar_perfil(sender, instance, created, **kwargs):
+    """
+    Señal para crear o actualizar el perfil automáticamente al crear o guardar un usuario.
+    """
     if created:
         Perfil.objects.create(user=instance)
     else:
         instance.perfil.save()
-
