@@ -121,12 +121,14 @@
 
             const formData = new FormData(e.target);
             const params = new URLSearchParams(formData);
+            console.log("Se hizo la pegada que lista publicaciones")
 
             fetch("{% url 'filter_publicaciones' %}?" + params.toString(), {
                 headers: { 'x-requested-with': 'XMLHttpRequest' }
             })
                 .then(response => response.text())
                 .then(html => {
+                    console.log(html)// Aquí ves el HTML recibido
                     document.getElementById('publicaciones-container').innerHTML = html;
                 });
         });
