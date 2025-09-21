@@ -3,7 +3,6 @@ from .views import perfil_usuario, editar_publicacion, filter_publicaciones, mai
 
 urlpatterns = [
     path('', main_page, name='main_page'),
-    #path("publicaciones/", publicaciones_list),
     path("publicaciones/<int:pk>/", publicaciones_detail, name='publicaciones_detail'),
     path("registro/", registro, name="registro"),
     path('publicacion/<int:pk>/consulta/', consulta_animal, name='consulta_animal'),

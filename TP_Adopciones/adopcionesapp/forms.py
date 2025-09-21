@@ -1,12 +1,9 @@
 # adopcionesapp/forms.py
-import ast
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from .models import Animal, Comentario, Publicacion
-
-
 
 class RegistroForm(UserCreationForm):
     email = forms.EmailField(required=True, label="Email")
@@ -56,33 +53,6 @@ class AnimalForm(forms.ModelForm):
             'compatibilidad_ninos': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'comportamiento': forms.Textarea(attrs={'class': 'form-control', 'rows': 3})
         }
-
-    # def clean_vacunas(self):
-    #     vacunas_texto = self.cleaned_data.get('vacunas', '')
-    #     if vacunas_texto:
-    #         vacunas_lista = [v.strip() for v in vacunas_texto.split(',') if v.strip()]
-    #         if not vacunas_lista:
-    #             raise forms.ValidationError("El formato de las vacunas es incorrecto. Separar por comas.")
-    #         return vacunas_lista
-    #     return []
-
-    # def clean_vacunas(self):
-    #     vacunas_texto = self.cleaned_data.get('vacunas', '')
-
-    #     if isinstance(vacunas_texto, str) and vacunas_texto.startswith("[") and vacunas_texto.endswith("]"):
-    #         vacunas_lista = ast.literal_eval(vacunas_texto)
-    #         return vacunas_lista
-
-    #     if vacunas_texto:
-    #         vacunas_lista = [v.strip() for v in vacunas_texto.split(',') if v.strip()]
-    #         if not vacunas_lista:
-    #             raise forms.ValidationError("El formato de las vacunas es incorrecto. Separar por comas.")
-    #         return vacunas_lista
-
-    #     # Si no hay nada, devolvemos lista vacía
-    #     return []
-
-
 
     def clean_edad(self):
         edad = self.cleaned_data.get('edad')
