@@ -1,3 +1,8 @@
+"""
+Formularios personalizados para la aplicación adopcionesapp.
+Incluye formularios de registro, autenticación, publicaciones, animales, multimedia y comentarios.
+"""
+
 # adopcionesapp/forms.py
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
@@ -6,6 +11,9 @@ from django.contrib.auth.forms import AuthenticationForm
 from .models import Animal, Comentario, Publicacion
 
 class RegistroForm(UserCreationForm):
+    """
+    Formulario de registro de usuario extendido con validación de email único.
+    """
     email = forms.EmailField(required=True, label="Email")
 
     class Meta:
@@ -24,6 +32,9 @@ class RegistroForm(UserCreationForm):
         return email
 
 class CustomAuthenticationForm(AuthenticationForm):
+    """
+    Formulario de autenticación personalizado para mejorar la experiencia de usuario.
+    """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
@@ -33,6 +44,9 @@ class CustomAuthenticationForm(AuthenticationForm):
             })
 
 class AnimalForm(forms.ModelForm):
+    """
+    Formulario para la creación y edición de animales.
+    """
     class Meta:
         model = Animal
         fields = [
@@ -61,6 +75,9 @@ class AnimalForm(forms.ModelForm):
         return edad
 
 class PublicacionForm(forms.ModelForm):
+    """
+    Formulario para la creación de publicaciones de adopción.
+    """
     class Meta:
         model = Publicacion
         fields = [
@@ -79,6 +96,9 @@ class PublicacionForm(forms.ModelForm):
         }
 
 class PublicacionEditarForm(forms.ModelForm):
+    """
+    Formulario para la edición de publicaciones de adopción.
+    """
     class Meta:
         model = Publicacion
         fields = [
@@ -99,6 +119,9 @@ class PublicacionEditarForm(forms.ModelForm):
         }
 
 class MultimediaForm(forms.Form):
+    """
+    Formulario para la carga de archivos multimedia (imágenes y videos) asociados a una publicación.
+    """
     archivo1 = forms.FileField(required=False, widget=forms.FileInput(attrs={"class": "form-control"}))
     archivo2 = forms.FileField(required=False, widget=forms.FileInput(attrs={"class": "form-control"}))
     archivo3 = forms.FileField(required=False, widget=forms.FileInput(attrs={"class": "form-control"}))
@@ -123,6 +146,9 @@ class MultimediaForm(forms.Form):
         return cleaned_data
 
 class ComentarioForm(forms.ModelForm):
+    """
+    Formulario para la creación de comentarios en publicaciones.
+    """
     class Meta:
         model = Comentario
         fields = ["texto"]
