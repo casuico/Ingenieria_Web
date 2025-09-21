@@ -1,19 +1,28 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/crear_publicacion.css' %}">
+{% endblock %}
+
 {% block content %}
-<div class="container mt-5">
-    <div class="card shadow-sm">
+<div class="container crear-publicacion-container">
+    <div class="crear-publicacion-card">
         <div class="card-body">
-            <h2 class="card-title mb-4 text-center">Crear Publicación</h2>
-            <form method="POST" enctype="multipart/form-data">
+            <h2 class="titulo-crear-publicacion">🐾 Crear Publicación</h2>
+
+            <form method="POST" enctype="multipart/form-data" id="publicacionForm">
                 {% csrf_token %}
 
                 <!-- Datos del Animal -->
-                <fieldset class="mb-4">
-                    <legend class="h5 mb-3">Datos del Animal</legend>
-                    <div class="row g-3">
+                <fieldset class="form-section">
+                    <legend class="h5">📋 Datos del Animal</legend>
+                    <div class="form-grid">
                         {% for field in animal_form %}
-                        <div class="col-md-6">
-                            <label class="form-label">{{ field.label }}</label>
+                        <div class="form-group">
+                            <label class="form-label {% if field.field.required %}required{% endif %}">
+                                {{ field.label }}
+                            </label>
                             {{ field }}
                             {% if field.help_text %}
                             <div class="form-text">{{ field.help_text }}</div>
@@ -32,12 +41,14 @@
                 </fieldset>
 
                 <!-- Datos de la Publicación -->
-                <fieldset class="mb-4">
-                    <legend class="h5 mb-3">Datos de la Publicación</legend>
-                    <div class="row g-3">
+                <fieldset class="form-section">
+                    <legend class="h5">📝 Datos de la Publicación</legend>
+                    <div class="form-grid">
                         {% for field in publicacion_form %}
-                        <div class="col-md-6">
-                            <label class="form-label">{{ field.label }}</label>
+                        <div class="form-group {% if field.name == 'historia' %}historia-field{% endif %} {% if field.name == 'recomendaciones_cuidado' %}recomendaciones-field{% endif %}">
+                            <label class="form-label {% if field.field.required %}required{% endif %}">
+                                {{ field.label }}
+                            </label>
                             {{ field }}
                             {% if field.help_text %}
                             <div class="form-text">{{ field.help_text }}</div>
@@ -56,19 +67,133 @@
                 </fieldset>
 
                 <!-- Multimedia -->
-                <fieldset class="mb-4">
-                    <legend class="h5 mb-3">Multimedia</legend>
+                <fieldset class="form-section multimedia-section">
+                    <legend class="h5">🖼️ Multimedia</legend>
                     {{ multimedia_form.non_field_errors }}
-                    <div class="mb-2">{{ multimedia_form.archivo1 }}</div>
-                    <div class="mb-2">{{ multimedia_form.archivo2 }}</div>
-                    <div class="mb-2">{{ multimedia_form.archivo3 }}</div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <div class="form-file">
+                                <input type="file" name="archivo1" class="form-file-input" id="id_archivo1" accept="image/*,video/*">
+                                <label class="form-file-label" for="id_archivo1">
+                                    <div>
+                                        <i class="bi bi-cloud-arrow-up"></i>
+                                        <div>Seleccionar archivo 1</div>
+                                        <small class="text-muted">Imagen o video</small>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="form-file">
+                                <input type="file" name="archivo2" class="form-file-input" id="id_archivo2" accept="image/*,video/*">
+                                <label class="form-file-label" for="id_archivo2">
+                                    <div>
+                                        <i class="bi bi-cloud-arrow-up"></i>
+                                        <div>Seleccionar archivo 2</div>
+                                        <small class="text-muted">Imagen o video</small>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="form-file">
+                                <input type="file" name="archivo3" class="form-file-input" id="id_archivo3" accept="image/*,video/*">
+                                <label class="form-file-label" for="id_archivo3">
+                                    <div>
+                                        <i class="bi bi-cloud-arrow-up"></i>
+                                        <div>Seleccionar archivo 3</div>
+                                        <small class="text-muted">Imagen o video</small>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Preview de imágenes (se agregará con JavaScript) -->
+                    <div class="image-preview-container" id="imagePreviewContainer"></div>
                 </fieldset>
 
-                <div class="d-flex justify-content-end">
-                    <button type="submit" class="btn btn-success btn-lg">Crear Publicación</button>
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn-submit">
+                        <i class="bi bi-check-circle me-2"></i>Crear Publicación
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+<!-- JavaScript para preview de imágenes -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Preview de imágenes
+    const fileInputs = document.querySelectorAll('.form-file-input');
+    const previewContainer = document.getElementById('imagePreviewContainer');
+
+    fileInputs.forEach(input => {
+        input.addEventListener('change', function(e) {
+            previewContainer.innerHTML = '';
+
+            fileInputs.forEach(fileInput => {
+                if (fileInput.files && fileInput.files[0]) {
+                    const file = fileInput.files[0];
+                    const reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        const preview = document.createElement('div');
+                        preview.className = 'image-preview';
+
+                        if (file.type.startsWith('image/')) {
+                            preview.innerHTML = `
+                                <img src="${e.target.result}" alt="Preview">
+                                <button type="button" class="image-preview-remove">&times;</button>
+                            `;
+                        } else if (file.type.startsWith('video/')) {
+                            preview.innerHTML = `
+                                <video controls>
+                                    <source src="${e.target.result}" type="${file.type}">
+                                    Tu navegador no soporta videos.
+                                </video>
+                                <button type="button" class="image-preview-remove">&times;</button>
+                            `;
+                        }
+
+                        preview.querySelector('.image-preview-remove').addEventListener('click', function() {
+                            fileInput.value = '';
+                            preview.remove();
+                        });
+
+                        previewContainer.appendChild(preview);
+                    }
+
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+    });
+
+    // Mejorar selects
+    document.querySelectorAll('select').forEach(select => {
+        select.classList.add('form-select');
+    });
+
+    // Mejorar inputs
+    document.querySelectorAll('input[type="text"], input[type="number"], textarea').forEach(input => {
+        input.classList.add('form-control');
+    });
+
+    // Mejorar checkboxes
+    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+        checkbox.classList.add('form-check-input');
+        const label = checkbox.nextElementSibling;
+        if (label && label.tagName === 'LABEL') {
+            label.classList.add('form-check-label');
+            checkbox.parentElement.classList.add('form-check');
+        }
+    });
+});
+</script>
 {% endblock %}

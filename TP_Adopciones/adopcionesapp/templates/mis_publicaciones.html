@@ -1,79 +1,112 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/mis_publicaciones.css' %}">
+{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2 class="mb-4">Mis Publicaciones</h2>
+<div class="container mis-publicaciones-container">
+    <h2 class="titulo-principal">🐾 Mis Publicaciones</h2>
 
     {% for pub in publicaciones %}
-    <div class="card mb-4">
-        <div class="row g-4 mt-3 mb-3">
-            {% if pub.multimedia.all %}
-            <div class="col-12 text-center mb-3 mt-0">
-                <h2 class="fw-bold fs-4">{{ pub.titulo }}</h2>
-            </div>
-            <div class="col-md-4">
-                <div id="carousel{{ forloop.counter }}" class="carousel slide" data-bs-ride="carousel">
-                    <div class="carousel-inner">
-                        {% for media in pub.multimedia.all %}
-                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                            {% if media.tipo == "imagen" %}
-                            <img src="{{ media.archivo.url }}" class="d-block w-50 rounded-start"
-                                alt="{{ pub.animal.nombre }}">
-                            {% elif media.tipo == "video" %}
-                            <video controls class="d-block w-50 rounded-start">
-                                <source src="{{ media.archivo.url }}" type="video/mp4">
-                            </video>
-                            {% endif %}
+    <div class="publicacion-card">
+        <!-- Badge de estado -->
+        <div class="estado-badge {% if pub.adoptado %}badge-adoptado{% else %}badge-disponible{% endif %}">
+            {% if pub.adoptado %}✅ Adoptado{% else %}🐕 Disponible{% endif %}
+        </div>
+
+        <!-- Encabezado con título -->
+        <div class="publicacion-header">
+            <h3 class="publicacion-titulo">{{ pub.titulo }}</h3>
+        </div>
+
+        <div class="publicacion-content">
+            <div class="row align-items-center">
+                <!-- Carrusel de multimedia -->
+                {% if pub.multimedia.all %}
+                <div class="col-md-5 mb-4 mb-md-0">
+                    <div id="carousel{{ forloop.counter }}" class="carousel slide publicacion-carousel" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            {% for media in pub.multimedia.all %}
+                            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                {% if media.tipo == "imagen" %}
+                                <img src="{{ media.archivo.url }}" class="d-block w-100" alt="{{ pub.animal.nombre }}">
+                                {% elif media.tipo == "video" %}
+                                <video controls class="d-block w-100">
+                                    <source src="{{ media.archivo.url }}" type="video/mp4">
+                                    Tu navegador no soporta videos.
+                                </video>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
                         </div>
-                        {% endfor %}
-                    </div>
-                    {% if pub.multimedia.count > 1 %}
-                    <button class="carousel-control-prev" type="button" data-bs-target="#carousel{{ forloop.counter }}"
-                        data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon"></span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#carousel{{ forloop.counter }}"
-                        data-bs-slide="next">
-                        <span class="carousel-control-next-icon"></span>
-                    </button>
-                    {% endif %}
-                </div>
-            </div>
-            {% endif %}
-            <div class="col-md-8">
-                <div class="card-body d-flex justify-content-center align-items-center">
-                    <div class="datos_izquierda flex-fill pe-3">
-                        <p><strong>Nombre: </strong>{{ pub.animal.nombre }}</p>
-                        <p><strong>Edad: </strong>{{ pub.animal.edad }} años</p>
-                        <p><strong>Raza: </strong>{{ pub.animal.raza }}</p>
-                    </div>
-                    <div class="datos_derecha flex-fill ps-3">
-                        <p><strong>Sexo: </strong>{{ pub.animal.sexo }}</p>
-                        <p><strong>Castrado: </strong>{% if pub.animal.castrado %}Sí{% else %}No{% endif %}</p>
-                        {% if pub.animal.vacunas %}
-                        <p><strong>Vacunas:</strong> {{ pub.animal.vacunas }}</p>
-                        {% else %}
-                        <p>No tiene vacunas</p>
+                        {% if pub.multimedia.count > 1 %}
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carousel{{ forloop.counter }}" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Anterior</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carousel{{ forloop.counter }}" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Siguiente</span>
+                        </button>
                         {% endif %}
                     </div>
                 </div>
-                <a href="{% url 'editar_publicacion' pub.pk %}" class="btn btn-warning mt-2 mb-2">Editar</a>
+                {% endif %}
 
+                <!-- Información del animal -->
+                <div class="col-md-7">
+                    <div class="animal-info">
+                        <div class="info-col">
+                            <p><strong>Nombre:</strong> {{ pub.animal.nombre }}</p>
+                            <p><strong>Edad:</strong> {{ pub.animal.edad }} años</p>
+                            <p><strong>Raza:</strong> {{ pub.animal.raza }}</p>
+                        </div>
+                        <div class="info-col">
+                            <p><strong>Sexo:</strong>
+                                {% if pub.animal.sexo == "M" %}Macho{% else %}Hembra{% endif %}
+                            </p>
+                            <p><strong>Castrado:</strong> {% if pub.animal.castrado %}Sí{% else %}No{% endif %}</p>
+                            <p><strong>Vacunas:</strong>
+                                {% if pub.animal.vacunas %}{{ pub.animal.vacunas }}{% else %}No tiene vacunas{% endif %}
+                            </p>
+                        </div>
+                    </div>
 
-                <form method="POST" class="d-inline">
-                    {% csrf_token %}
-                    <input type="hidden" name="publicacion_id" value="{{ pub.pk }}">
-                    {% if pub.adoptado %}
-                    <button type="submit" class="btn btn-danger mt-2 mb-2">Marcar como No Adoptado</button>
-                    {% else %}
-                    <button type="submit" class="btn btn-success mt-2 mb-2">Marcar como Adoptado</button>
-                    {% endif %}
-                </form>
+                    <!-- Botones de acción -->
+                    <div class="acciones-botones">
+                        <a href="{% url 'editar_publicacion' pub.pk %}" class="btn btn-editar">
+                            <i class="bi bi-pencil me-2"></i>Editar
+                        </a>
+
+                        <form method="POST" class="d-inline">
+                            {% csrf_token %}
+                            <input type="hidden" name="publicacion_id" value="{{ pub.pk }}">
+                            {% if pub.adoptado %}
+                            <button type="submit" class="btn btn-no-adoptado">
+                                <i class="bi bi-x-circle me-2"></i>No Adoptado
+                            </button>
+                            {% else %}
+                            <button type="submit" class="btn btn-adoptado">
+                                <i class="bi bi-check-circle me-2"></i>Adoptado
+                            </button>
+                            {% endif %}
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     {% empty %}
-    <p>No tenés publicaciones todavía.</p>
+    <!-- Estado vacío -->
+    <div class="estado-vacio">
+        <i class="bi bi-inbox"></i>
+        <p>No tenés publicaciones todavía.</p>
+        <a href="{% url 'crear_publicacion' %}" class="btn-crear-publicacion">
+            <i class="bi bi-plus-circle me-2"></i>Crear primera publicación
+        </a>
+    </div>
     {% endfor %}
 </div>
 {% endblock %}
