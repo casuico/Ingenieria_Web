@@ -141,7 +141,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = os.environ.get('EMAIL_USER')      # tu email
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')  # tu contraseña o app password
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASS')  # tu contraseña o app password
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
@@ -169,19 +169,9 @@ if 'RENDER' in os.environ:
     )
     DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 else:
-    # Configuración para entorno local
-    DEBUG = True
-    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
-
-    # Configuración de SQLite
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
-
-    # Cloudinary configuración local
+    # MEDIA_URL = '/media/'
+    # MEDIA_ROOT = BASE_DIR / 'media'
+    # DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
     load_dotenv()
     import cloudinary
     cloudinary.config(
@@ -190,3 +180,4 @@ else:
         api_secret=os.environ.get('API_SECRET'),
     )
     DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
