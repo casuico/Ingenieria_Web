@@ -3,7 +3,7 @@ Vistas relacionadas con la autenticación de usuarios, registro, activación de 
 """
 
 from django.core.mail import EmailMultiAlternatives
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import login
 from django.contrib.auth.models import User
 from django.contrib.auth.tokens import default_token_generator as token_generator
@@ -16,7 +16,6 @@ from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from ..forms import RegistroForm
-from ..models import Perfil
 
 def registro(request):
     """
@@ -76,15 +75,19 @@ def activar_cuenta(request, uidb64, token):
         return HttpResponse("El enlace de activación no es válido o ya expiró.")
 
 @login_required
-def perfil_usuario(request):
+def perfil_usuario(request, user_id=None):
     """
     Vista para mostrar y actualizar el perfil del usuario.
-    Permite a usuarios con rol 'empresa' subir o actualizar su logo.
     """
-    usuario = request.user
-    perfil = usuario.perfil
+    if user_id:
+        usuario = get_object_or_404(User, pk=user_id)
+    else:
+        usuario = request.user
 
-    if request.method == "POST" and perfil.rol == "empresa":
+    perfil = usuario.perfil
+    publicaciones = usuario.publicaciones.all()
+
+    if request.method == "POST" and perfil.rol == "empresa" and usuario == request.user:
         archivo = request.FILES.get("archivo")
         if archivo:
             perfil.archivo = archivo
@@ -94,4 +97,7 @@ def perfil_usuario(request):
             messages.error(request, "Debes seleccionar un archivo para subir.")
         return redirect("perfil_usuario")
 
-    return render(request, "perfil_usuario.html", {"usuario": usuario})
+    return render(request, "perfil_usuario.html", {
+        "usuario": usuario,
+        "publicaciones": publicaciones,
+    })

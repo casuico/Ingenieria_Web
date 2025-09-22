@@ -11,7 +11,7 @@
                 <div class="card-body p-4">
                     <div class="d-flex flex-column align-items-center mb-4">
                         <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center mb-3"
-                             style="width: 80px; height: 80px;">
+                            style="width: 80px; height: 80px;">
                             <i class="bi bi-person-fill text-white" style="font-size: 2.5rem;"></i>
                         </div>
                         <h3 class="mb-0">{{ usuario.username }}</h3>
@@ -39,9 +39,9 @@
                                 <label class="form-label fw-bold text-primary">Nombre</label>
                                 <p class="form-control bg-light">
                                     {% if usuario.first_name %}
-                                        {{ usuario.first_name }}
+                                    {{ usuario.first_name }}
                                     {% else %}
-                                        <span class="text-muted">No especificado</span>
+                                    <span class="text-muted">No especificado</span>
                                     {% endif %}
                                 </p>
                             </div>
@@ -51,9 +51,9 @@
                                 <label class="form-label fw-bold text-primary">Apellido</label>
                                 <p class="form-control bg-light">
                                     {% if usuario.last_name %}
-                                        {{ usuario.last_name }}
+                                    {{ usuario.last_name }}
                                     {% else %}
-                                        <span class="text-muted">No especificado</span>
+                                    <span class="text-muted">No especificado</span>
                                     {% endif %}
                                 </p>
                             </div>
@@ -75,14 +75,40 @@
                         </div>
                     </div>
 
-                    {% if usuario.perfil.rol == "empresa" %}
+                    <!-- PUBLICACIONES DEL USUARIO -->
+                    {% if publicaciones %}
+                    <hr class="my-4">
+                    <h4 class="mb-3 text-primary">
+                        <i class="bi bi-collection me-2"></i>
+                        Publicaciones de {{ usuario.username }}
+                    </h4>
+
+                    <div class="list-group mb-4">
+                        {% for pub in publicaciones %}
+                        <a href="{% url 'publicaciones_detail' pub.pk %}"
+                            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            <span>
+                                <i class="bi bi-file-earmark-text me-2 text-primary"></i>{{ pub.titulo }}
+                            </span>
+                            <small class="text-muted">{{ pub.fecha_publicacion|date:"d/m/Y" }}</small>
+                        </a>
+                        {% empty %}
+                        <p class="text-muted">Este usuario no tiene publicaciones.</p>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+
+                    <!-- LOGO EMPRESA -->
+                    {% if usuario.perfil.rol == "empresa" and usuario == request.user %}
                     <hr class="my-4">
                     <h4 class="mb-3 text-primary"><i class="bi bi-image me-2"></i>Logo de la Empresa</h4>
 
                     {% if usuario.perfil.archivo %}
                     <div class="mb-3 text-center">
                         <p class="fw-bold">Logo actual:</p>
-                        <img src="{{ usuario.perfil.archivo.url }}" alt="Logo empresa" class="img-thumbnail" width="200">
+                        <img src="{{ usuario.perfil.archivo.url }}" alt="Logo empresa" class="img-thumbnail"
+                            width="200">
                     </div>
                     {% endif %}
 

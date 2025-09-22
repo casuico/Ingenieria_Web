@@ -16,4 +16,5 @@ urlpatterns = [
     path("publicaciones/<int:pk>/editar/", editar_publicacion, name="editar_publicacion"),
     path("publicaciones/mis_publicaciones/", mis_publicaciones, name="mis_publicaciones"),
     path("perfil/", perfil_usuario, name="perfil_usuario"),
+    path("perfil/<int:user_id>/", perfil_usuario, name="perfil_detalle"),
 ]
