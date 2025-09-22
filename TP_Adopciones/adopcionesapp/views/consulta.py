@@ -34,8 +34,7 @@ def consulta_animal(request, pk):
         )
 
         text_content = f"""
-        Consulta sobre {publicacion.nombre}
-
+        
         Nombre: {nombre}
         Email: {email}
 
@@ -51,7 +50,7 @@ def consulta_animal(request, pk):
         })
 
         msg = EmailMultiAlternatives(
-            subject=f"Consulta sobre {publicacion.nombre}: {asunto}",
+            subject=f"Consulta sobre {publicacion.titulo}: {asunto}",
             body=text_content,
             from_email=settings.EMAIL_HOST_USER,
             to=[publicacion.creador.email],
@@ -60,7 +59,7 @@ def consulta_animal(request, pk):
         msg.attach_alternative(html_content, "text/html")
         msg.send(fail_silently=False)
 
-        messages.success(request, f"Tu consulta sobre '{publicacion.nombre}' fue enviada correctamente.")
+        messages.success(request, f"Tu consulta sobre '{publicacion.titulo}' fue enviada correctamente.")
 
         return redirect('publicaciones_detail', pk=publicacion.pk)
 
