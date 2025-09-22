@@ -1,35 +1,112 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <h2 class="card-title mb-4 text-center">Perfil de Usuario</h2>
-            <p><strong>Nombre de usuario:</strong> {{ usuario.username }}</p>
-            <p><strong>Email:</strong> {{ usuario.email }}</p>
-            <p><strong>Nombre:</strong> {{ usuario.first_name }}</p>
-            <p><strong>Apellido:</strong> {{ usuario.last_name }}</p>
-            <p><strong>Último acceso:</strong> {{ usuario.last_login|date:"d/m/Y H:i" }}</p>
-            <p><strong>Fecha de registro:</strong> {{ usuario.date_joined|date:"d/m/Y H:i" }}</p>
-
-            {% if usuario.perfil.rol == "empresa" %}
-            <hr>
-            <h3 class="mt-4">Logo de la Empresa</h3>
-
-            {% if usuario.perfil.archivo %}
-            <p>Logo actual:</p>
-            <img src="{{ usuario.perfil.archivo.url }}" alt="Logo empresa" width="150">
-            {% endif %}
-
-            <form method="POST" enctype="multipart/form-data" action="{% url 'perfil_usuario' %}">
-                {% csrf_token %}
-                <div class="mb-3">
-                    <label for="id_archivo" class="form-label">Subir nuevo logo</label>
-                    <input type="file" name="archivo" id="id_archivo" class="form-control">
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow border-0">
+                <div class="card-header bg-primary text-white text-center py-3">
+                    <h2 class="card-title mb-0"><i class="bi bi-person-circle me-2"></i>Perfil de Usuario</h2>
                 </div>
-                <button type="submit" class="btn btn-primary">Actualizar Logo</button>
-            </form>
-            {% endif %}
+                <div class="card-body p-4">
+                    <div class="d-flex flex-column align-items-center mb-4">
+                        <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center mb-3"
+                             style="width: 80px; height: 80px;">
+                            <i class="bi bi-person-fill text-white" style="font-size: 2.5rem;"></i>
+                        </div>
+                        <h3 class="mb-0">{{ usuario.username }}</h3>
+                        <span class="text-muted">{{ usuario.email }}</span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold text-primary">Nombre de usuario</label>
+                                <p class="form-control bg-light">{{ usuario.username }}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold text-primary">Email</label>
+                                <p class="form-control bg-light">{{ usuario.email }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold text-primary">Nombre</label>
+                                <p class="form-control bg-light">
+                                    {% if usuario.first_name %}
+                                        {{ usuario.first_name }}
+                                    {% else %}
+                                        <span class="text-muted">No especificado</span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold text-primary">Apellido</label>
+                                <p class="form-control bg-light">
+                                    {% if usuario.last_name %}
+                                        {{ usuario.last_name }}
+                                    {% else %}
+                                        <span class="text-muted">No especificado</span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold text-primary">Último acceso</label>
+                                <p class="form-control bg-light">{{ usuario.last_login|date:"d/m/Y H:i" }}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold text-primary">Fecha de registro</label>
+                                <p class="form-control bg-light">{{ usuario.date_joined|date:"d/m/Y H:i" }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if usuario.perfil.rol == "empresa" %}
+                    <hr class="my-4">
+                    <h4 class="mb-3 text-primary"><i class="bi bi-image me-2"></i>Logo de la Empresa</h4>
+
+                    {% if usuario.perfil.archivo %}
+                    <div class="mb-3 text-center">
+                        <p class="fw-bold">Logo actual:</p>
+                        <img src="{{ usuario.perfil.archivo.url }}" alt="Logo empresa" class="img-thumbnail" width="200">
+                    </div>
+                    {% endif %}
+
+                    <form method="POST" enctype="multipart/form-data" action="{% url 'perfil_usuario' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="id_archivo" class="form-label fw-bold">Subir nuevo logo</label>
+                            <input type="file" name="archivo" id="id_archivo" class="form-control" accept="image/*">
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-upload me-2"></i>Actualizar Logo
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+                <div class="card-footer bg-light text-center py-3">
+                    <a href="{% url 'main_page' %}" class="btn btn-outline-secondary me-2">
+                        <i class="bi bi-house me-1"></i>Volver al Inicio
+                    </a>
+                    <a href="#" class="btn btn-outline-primary">
+                        <i class="bi bi-pencil-square me-1"></i>Editar Perfil
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
