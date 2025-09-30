@@ -177,22 +177,24 @@ def editar_publicacion(request, pk):
 def filter_publicaciones(request):
     publicaciones = Publicacion.objects.filter(estado="APR", adoptado=False)
 
-    edad = request.GET.get("edad")
+    edad_min = request.GET.get("edad_min")
+    edad_max = request.GET.get("edad_max")
     sexo = request.GET.get("sexo")
     raza = request.GET.get("raza")
     castrado = request.GET.get("castrado")
 
-    if edad:
-        publicaciones = publicaciones.filter(animal__edad=edad)
+    if edad_min and edad_max:
+        publicaciones = publicaciones.filter(animal__edad__gte=edad_min, animal__edad__lte=edad_max)
+    elif edad_min:
+        publicaciones = publicaciones.filter(animal__edad__gte=edad_min)
+    elif edad_max:
+        publicaciones = publicaciones.filter(animal__edad__lte=edad_max)
     if sexo:
         publicaciones = publicaciones.filter(animal__sexo=sexo)
     if raza:
         publicaciones = publicaciones.filter(animal__raza__icontains=raza)
     if castrado:
         publicaciones = publicaciones.filter(animal__castrado=(castrado.lower() == "true"))
-
-    # Loguear los IDs y títulos de las publicaciones filtradas
-    print("Publicaciones filtradas:", list(publicaciones.values_list("id", "titulo")))
 
     if request.headers.get("x-requested-with") == "XMLHttpRequest":
         return render(request, "partials/publicaciones_list.html", {"publicaciones": publicaciones})

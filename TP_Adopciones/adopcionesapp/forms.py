@@ -70,8 +70,8 @@ class AnimalForm(forms.ModelForm):
 
     def clean_edad(self):
         edad = self.cleaned_data.get('edad')
-        if edad >= 50:
-            raise forms.ValidationError("La edad debe ser menor a 50 años")
+        if edad >= 250:
+            raise forms.ValidationError("La edad debe ser menor a 250 años")
         return edad
 
 class PublicacionForm(forms.ModelForm):

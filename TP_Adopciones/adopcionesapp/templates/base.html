@@ -23,7 +23,7 @@
             </a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
@@ -116,35 +116,37 @@
 
     <!-- no se como hacer para que funcione si lo pongo en un archivo js separado -->
     <script>
-        document.getElementById('filtros-form').addEventListener('submit', function (e) {
-            e.preventDefault(); // evita recargar la página
 
-            const formData = new FormData(e.target);
-            const params = new URLSearchParams(formData);
-            console.log("Se hizo la pegada que lista publicaciones")
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('filtros-form')?.addEventListener('submit', function (e) {
+                e.preventDefault(); // evita recargar la página
 
-            fetch("{% url 'filter_publicaciones' %}?" + params.toString(), {
-                headers: { 'x-requested-with': 'XMLHttpRequest' }
-            })
-                .then(response => response.text())
-                .then(html => {
-                    console.log(html)// Aquí ves el HTML recibido
-                    document.getElementById('publicaciones-container').innerHTML = html;
-                });
-        });
+                const formData = new FormData(e.target);
+                const params = new URLSearchParams(formData);
 
-        // Botón de "Borrar filtros"
-        document.getElementById('reset-filtros').addEventListener('click', function () {
-            document.getElementById('filtros-form').reset(); // limpia el formulario
+                fetch("{% url 'filter_publicaciones' %}?" + params.toString(), {
+                    headers: { 'x-requested-with': 'XMLHttpRequest' }
+                })
+                    .then(response => response.text())
+                    .then(html => {
+                        document.getElementById('publicaciones-container').innerHTML = html;
+                    });
+            });
 
-            fetch("{% url 'filter_publicaciones' %}", {
-                headers: { 'x-requested-with': 'XMLHttpRequest' }
-            })
-                .then(response => response.text())
-                .then(html => {
-                    document.getElementById('publicaciones-container').innerHTML = html;
-                });
+            // Botón de "Borrar filtros"
+            document.getElementById('reset-filtros')?.addEventListener('click', function () {
+                document.getElementById('filtros-form').reset();
+
+                fetch("{% url 'filter_publicaciones' %}", {
+                    headers: { 'x-requested-with': 'XMLHttpRequest' }
+                })
+                    .then(response => response.text())
+                    .then(html => {
+                        document.getElementById('publicaciones-container').innerHTML = html;
+                    });
+            });
         });
     </script>
 </body>
+
 </html>
