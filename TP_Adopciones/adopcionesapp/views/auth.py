@@ -23,33 +23,36 @@ def registro(request):
     Envía un correo de activación al usuario registrado.
     """
     if request.method == "POST":
-        form = RegistroForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.is_active = False
-            user.save()
+        try:
+            form = RegistroForm(request.POST)
+            if form.is_valid():
+                user = form.save(commit=False)
+                user.is_active = False
+                user.save()
 
-            current_site = get_current_site(request)
-            uid = urlsafe_base64_encode(force_bytes(user.pk))
-            token = token_generator.make_token(user)
-            activation_url = f"http://{current_site.domain}/activar/{uid}/{token}/"
+                current_site = get_current_site(request)
+                uid = urlsafe_base64_encode(force_bytes(user.pk))
+                token = token_generator.make_token(user)
+                activation_url = f"http://{current_site.domain}/activar/{uid}/{token}/"
 
-            subject = "Activa tu cuenta"
-            from_email = settings.EMAIL_HOST_USER
-            to_email = form.cleaned_data.get("email")
+                subject = "Activa tu cuenta"
+                from_email = settings.EMAIL_HOST_USER
+                to_email = form.cleaned_data.get("email")
 
-            text_content = f"Hola {user.username}, haz clic en el enlace para activar tu cuenta: {activation_url}"
+                text_content = f"Hola {user.username}, haz clic en el enlace para activar tu cuenta: {activation_url}"
 
-            html_content = render_to_string("email_verificacion.html", {
-                "user": user,
-                "url": activation_url
-            })
+                html_content = render_to_string("email_verificacion.html", {
+                    "user": user,
+                    "url": activation_url
+                })
 
-            msg = EmailMultiAlternatives(subject, text_content, from_email, [to_email])
-            msg.attach_alternative(html_content, "text/html")
-            msg.send()
+                msg = EmailMultiAlternatives(subject, text_content, from_email, [to_email])
+                msg.attach_alternative(html_content, "text/html")
+                msg.send()
 
-            return render(request, "registro_exitoso.html")
+                return render(request, "registro_exitoso.html")
+        except Exception as e:
+            print(f"Error al enviar el correo: {e}")
     else:
         form = RegistroForm()
 
