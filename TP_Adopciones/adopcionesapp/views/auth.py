@@ -36,7 +36,7 @@ def registro(request):
                 activation_url = f"http://{current_site.domain}/activar/{uid}/{token}/"
 
                 subject = "Activa tu cuenta"
-                from_email = settings.EMAIL_HOST_USER
+                from_email = settings.DEFAULT_FROM_EMAIL
                 to_email = form.cleaned_data.get("email")
 
                 text_content = f"Hola {user.username}, haz clic en el enlace para activar tu cuenta: {activation_url}"

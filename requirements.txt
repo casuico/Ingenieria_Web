@@ -10,3 +10,5 @@ Pillow
 cloudinary 
 django-cloudinary-storage
 python-dotenv
+sendgrid
+django-sendgrid-v5

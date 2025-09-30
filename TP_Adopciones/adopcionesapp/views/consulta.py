@@ -52,7 +52,7 @@ def consulta_animal(request, pk):
         msg = EmailMultiAlternatives(
             subject=f"Consulta sobre {publicacion.titulo}: {asunto}",
             body=text_content,
-            from_email=settings.EMAIL_HOST_USER,
+            from_email=settings.DEFAULT_FROM_EMAIL,
             to=[publicacion.creador.email],
             headers={'Reply-To': email}
         )
