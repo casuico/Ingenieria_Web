@@ -1,7 +1,7 @@
 """
 Definición de rutas (URLs) para la aplicación adopcionesapp.
 """
-
+from django.views.generic import TemplateView
 from django.urls import include, path
 from .views import perfil_usuario, editar_publicacion, filter_publicaciones, main_page, mis_publicaciones, publicaciones_detail, registro, consulta_animal, activar_cuenta, CrearPublicacionView
 
@@ -18,4 +18,5 @@ urlpatterns = [
     path("perfil/", perfil_usuario, name="perfil_usuario"),
     path("perfil/<int:user_id>/", perfil_usuario, name="perfil_detalle"),
     path('buscar/', include('haystack.urls')),
+    path("robots.txt", TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
 ]

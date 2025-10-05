@@ -4,3 +4,5 @@
 {{ object.recomendaciones_cuidado }}
 {{ object.animal.nombre }}
 {{ object.animal.tipo_animal }}
+{{ object.animal.raza}}
+{{ object.animal.vacunas}}

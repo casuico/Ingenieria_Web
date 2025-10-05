@@ -11,7 +11,7 @@
     <ul class="list-group">
         {% for result in page.object_list %}
             <li class="list-group-item">
-                <a href="{% url 'publicacion_detail' result.object.id %}">
+                <a href="{% url 'publicaciones_detail' result.object.id %}">
                     {{ result.object.titulo }}
                 </a>
                 <br>
