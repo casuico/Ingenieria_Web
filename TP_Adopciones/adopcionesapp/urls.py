@@ -2,7 +2,7 @@
 Definición de rutas (URLs) para la aplicación adopcionesapp.
 """
 
-from django.urls import path
+from django.urls import include, path
 from .views import perfil_usuario, editar_publicacion, filter_publicaciones, main_page, mis_publicaciones, publicaciones_detail, registro, consulta_animal, activar_cuenta, CrearPublicacionView
 
 urlpatterns = [
@@ -17,4 +17,5 @@ urlpatterns = [
     path("publicaciones/mis_publicaciones/", mis_publicaciones, name="mis_publicaciones"),
     path("perfil/", perfil_usuario, name="perfil_usuario"),
     path("perfil/<int:user_id>/", perfil_usuario, name="perfil_detalle"),
+    path('buscar/', include('haystack.urls')),
 ]

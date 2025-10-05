@@ -87,6 +87,18 @@
     </div>
 </div>
 
+<div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav ms-auto d-flex flex-row align-items-center">
+        <!-- ...opciones de usuario... -->
+    </ul>
+    <form class="d-flex ms-lg-3 my-2 my-lg-0" method="get" action="{% url 'haystack_search' %}">
+        <input class="form-control me-2" type="search" placeholder="Buscar..." aria-label="Buscar" name="q" required>
+        <button class="btn btn-outline-light" type="submit">
+            <i class="bi bi-search"></i>
+        </button>
+    </form>
+</div>
+
 
 <!-- Contenedor de publicaciones -->
 <div id="publicaciones-container">

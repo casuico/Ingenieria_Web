@@ -1,0 +1,6 @@
+{{ object.titulo }}
+{{ object.historia }}
+{{ object.condiciones_adopcion }}
+{{ object.recomendaciones_cuidado }}
+{{ object.animal.nombre }}
+{{ object.animal.tipo_animal }}
