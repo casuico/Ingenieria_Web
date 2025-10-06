@@ -18,5 +18,6 @@ urlpatterns = [
     path("perfil/", perfil_usuario, name="perfil_usuario"),
     path("perfil/<int:user_id>/", perfil_usuario, name="perfil_detalle"),
     path('buscar/', include('haystack.urls')),
+    path('rebuild_index/', include('views.rebuild_index')),
     path("robots.txt", TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
 ]
