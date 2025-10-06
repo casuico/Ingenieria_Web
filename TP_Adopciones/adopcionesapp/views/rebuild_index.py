@@ -1,4 +1,6 @@
 from django.views import View
+from django.core.management import call_command
+from django.http import JsonResponse
 
 def rebuild_index(request):
     from django.core.management import call_command
