@@ -22,7 +22,7 @@ post_delete.disconnect(remove_publicacion_index, sender=Publicacion)
 # Crear usuario si no existe
 user, _ = User.objects.get_or_create(username='admin', defaults={'password': 'admin'})
 
-# Eliminar publicaciones y animales existentes
+# Eliminar publicaciones y animales existentes y por favor que anden
 Publicacion.objects.all().delete()
 Animal.objects.all().delete()
 # Datos de prueba
