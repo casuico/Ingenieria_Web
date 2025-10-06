@@ -1,13 +1,23 @@
 import sys
 import os
+
+# Configurar entorno Django antes de cualquier import de modelos o signals
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/..")
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'adopciones_project.settings')
+
 import django
 django.setup()
 
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save, post_delete
+
 from adopcionesapp.models.animal import Animal
 from adopcionesapp.models.publicacion import Publicacion
+from adopcionesapp.signals import update_publicacion_index, remove_publicacion_index
+
+# Desconectar señales
+post_save.disconnect(update_publicacion_index, sender=Publicacion)
+post_delete.disconnect(remove_publicacion_index, sender=Publicacion)
 
 # Crear usuario si no existe
 user, _ = User.objects.get_or_create(username='admin', defaults={'password': 'admin'})
@@ -15,7 +25,6 @@ user, _ = User.objects.get_or_create(username='admin', defaults={'password': 'ad
 # Eliminar publicaciones y animales existentes
 Publicacion.objects.all().delete()
 Animal.objects.all().delete()
-
 # Datos de prueba
 publicaciones = [
     {
@@ -114,3 +123,6 @@ for pub in publicaciones:
     )
 
 print("¡Se crearon animales y publicaciones de prueba!")
+
+post_save.connect(update_publicacion_index, sender=Publicacion)
+post_delete.connect(remove_publicacion_index, sender=Publicacion)
