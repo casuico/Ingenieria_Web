@@ -12,3 +12,5 @@ django-cloudinary-storage
 python-dotenv
 sendgrid
 django-sendgrid-v5
+django-haystack
+whoosh
