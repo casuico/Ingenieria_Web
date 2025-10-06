@@ -4,7 +4,8 @@ Definición de rutas (URLs) para la aplicación adopcionesapp.
 from django import views
 from django.views.generic import TemplateView
 from django.urls import include, path
-from .views import rebuild_index,perfil_usuario, editar_publicacion, filter_publicaciones, main_page, mis_publicaciones, publicaciones_detail, registro, consulta_animal, activar_cuenta, CrearPublicacionView
+from .views import perfil_usuario, editar_publicacion, filter_publicaciones, main_page, mis_publicaciones, publicaciones_detail, registro, consulta_animal, activar_cuenta, CrearPublicacionView
+from .views.rebuild_index import rebuild_index
 
 urlpatterns = [
     path('', main_page, name='main_page'),
