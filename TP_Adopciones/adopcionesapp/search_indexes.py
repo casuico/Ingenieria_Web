@@ -12,4 +12,4 @@ class PublicacionIndex(indexes.SearchIndex, indexes.Indexable):
         return Publicacion
 
     def index_queryset(self, using=None):
-        return self.get_model().objects.filter(estado='APR')
+        return self.get_model().objects.all()
