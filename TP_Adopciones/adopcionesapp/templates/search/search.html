@@ -8,18 +8,8 @@
 </form>
 {% if query %}
     <p>{{ page.object_list|length }} resultado{{ page.object_list|pluralize }} para "{{ query }}":</p>
-    <ul class="list-group">
-        {% for result in page.object_list %}
-            <li class="list-group-item">
-                <a href="{% url 'publicaciones_detail' result.object.id %}">
-                    {{ result.object.titulo }}
-                </a>
-                <br>
-                <small>{{ result.object.historia|truncatewords:20 }}</small>
-            </li>
-        {% empty %}
-            <li class="list-group-item">No se encontraron resultados.</li>
-        {% endfor %}
-    </ul>
+    {% with publicaciones=page.object_list %}
+        {% include "partials/publicaciones_list.html" %}
+    {% endwith %}
 {% endif %}
 {% endblock %}
