@@ -159,7 +159,7 @@ import dj_database_url
 
 if 'RENDER' in os.environ:
     print("USING RENDER.COM SETTINGS!")
-    DEBUG = DEBUG_RENDER
+    DEBUG = False#DEBUG_RENDER
     ALLOWED_HOSTS = [os.environ.get('RENDER_EXTERNAL_HOSTNAME')]
     DATABASES = {'default': dj_database_url.config(conn_max_age=600)}
     MIDDLEWARE.insert(MIDDLEWARE.index('django.middleware.security.SecurityMiddleware') + 1,

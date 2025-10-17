@@ -4,6 +4,8 @@ Definición de rutas (URLs) para la aplicación adopcionesapp.
 from django import views
 from django.views.generic import TemplateView
 from django.urls import include, path
+
+from .views.auth import editar_perfil
 from .views import perfil_usuario, editar_publicacion, filter_publicaciones, main_page, mis_publicaciones, publicaciones_detail, registro, consulta_animal, activar_cuenta, CrearPublicacionView
 from .views.rebuild_index import rebuild_index
 
@@ -22,4 +24,7 @@ urlpatterns = [
     path('buscar/', include('haystack.urls')),
     path('rebuild_index/', rebuild_index, name='rebuild_index'),
     path("robots.txt", TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
+    path("perfil/<int:user_id>/", perfil_usuario, name="perfil_usuario"),
+    path("perfil/editar/", editar_perfil, name="editar_perfil"),
+
 ]

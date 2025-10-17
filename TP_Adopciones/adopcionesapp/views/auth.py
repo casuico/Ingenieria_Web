@@ -15,7 +15,7 @@ from django.conf import settings
 from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from ..forms import RegistroForm
+from ..forms import EditarPerfilForm, RegistroForm
 
 def registro(request):
     """
@@ -104,3 +104,24 @@ def perfil_usuario(request, user_id=None):
         "usuario": usuario,
         "publicaciones": publicaciones,
     })
+
+@login_required
+def editar_perfil(request):
+    usuario = request.user
+
+    if request.method == "POST":
+        form = EditarPerfilForm(request.POST, request.FILES, instance=usuario)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Tu perfil se actualizó correctamente.")
+            return redirect("perfil_usuario")
+        else:
+            messages.error(request, "Por favor corrige los errores.")
+    else:
+        # Inicializamos el campo archivo con el archivo actual si existe
+        initial = {}
+        if usuario.perfil.archivo:
+            initial["archivo"] = usuario.perfil.archivo
+        form = EditarPerfilForm(instance=usuario, initial=initial)
+
+    return render(request, "editar_perfil.html", {"form": form})

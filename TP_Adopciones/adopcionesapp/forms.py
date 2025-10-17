@@ -162,3 +162,16 @@ class ComentarioForm(forms.ModelForm):
         labels = {
             "texto": ""
         }
+
+class EditarPerfilForm(forms.ModelForm):
+    first_name = forms.CharField(label="Nombre", required=False)
+    last_name = forms.CharField(label="Apellido", required=False)
+    email = forms.EmailField(label="Email", required=True)
+
+    class Meta:
+        model = User
+        fields = ["first_name", "last_name", "email"]
+
+    def save(self, commit=True):
+        user = super().save(commit)
+        return user
