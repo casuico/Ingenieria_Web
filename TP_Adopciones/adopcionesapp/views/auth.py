@@ -84,8 +84,10 @@ def perfil_usuario(request, user_id=None):
     """
     if user_id:
         usuario = get_object_or_404(User, pk=user_id)
+        can_edit_profile = True if usuario == request.user else False
     else:
         usuario = request.user
+        can_edit_profile = True
 
     perfil = usuario.perfil
     publicaciones = usuario.publicaciones.all()
@@ -103,6 +105,7 @@ def perfil_usuario(request, user_id=None):
     return render(request, "perfil_usuario.html", {
         "usuario": usuario,
         "publicaciones": publicaciones,
+        "can_edit_profile": can_edit_profile,
     })
 
 @login_required

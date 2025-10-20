@@ -119,9 +119,11 @@
                     <a href="{% url 'main_page' %}" class="btn btn-outline-secondary me-2">
                         <i class="bi bi-house me-1"></i>Volver al Inicio
                     </a>
+                    {% if can_edit_profile %}
                     <a href="{% url 'editar_perfil' %}" class="btn btn-outline-primary">
                         <i class="bi bi-pencil-square me-1"></i>Editar Perfil
                     </a>
+                    {% endif %}
                 </div>
             </div>
         </div>

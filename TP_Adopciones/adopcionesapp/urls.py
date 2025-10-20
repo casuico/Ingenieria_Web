@@ -26,5 +26,4 @@ urlpatterns = [
     path("robots.txt", TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
     path("perfil/<int:user_id>/", perfil_usuario, name="perfil_usuario"),
     path("perfil/editar/", editar_perfil, name="editar_perfil"),
-
 ]
