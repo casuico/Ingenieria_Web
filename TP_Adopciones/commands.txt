@@ -18,6 +18,6 @@ SCRIPT PARA CREAR SUPER USER EN DOCKER: docker exec -it web_grupo3 python TP_Ado
 LISTAR TODOS LOS FILES: $ find . \( -name ".venv" -o -name ".git" \) -prune -false -o -print
 
 
-Build imagen: docker build -t app_groupo3 .
+Build imagen: docker build -t app_grupo3 .
 Crear el contenedor: docker create --name web_grupo3 -p 8000:8000 -v C:\Users\nicol\Desktop\data_grupo3/:/data app_grupo3
 Correr contenedor: docker start web_grupo3
