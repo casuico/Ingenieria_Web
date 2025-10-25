@@ -2,7 +2,7 @@ CREAR NUEVA APP: python manage.py startapp adopcionesapp
 EJECUTAR PROYECTO: python manage.py runserver
 
 VIRTUAL ENVIRONMENT:
-source "C:/Users/nicol/Desktop/Ingenieria Web/TP_Adopciones/venv/Scripts/activate"
+source "C:/Users/nicol/Desktop/Ingenieria Web/TP_Adopciones/.venv/Scripts/activate"
 deactivate
 
 BASE DE DATOS:
@@ -10,4 +10,14 @@ python manage.py makemigrations adopcionesapp
 python manage.py migrate
 
 SCRIPT PARA CREAR PUBLICACIONES DESDE BASH: python crear_publicaciones.py
-SCRIPT PARA CREAR PUBLICACIONES DESDE BASH: python crear_superusuario.py
+SCRIPT PARA CREAR PUBLICACIONES DESDE BASH: python scripts/crear_superusuario.py
+
+
+SCRIPT PARA CREAR SUPER USER EN DOCKER: docker exec -it web_grupo3 python TP_Adopciones/scripts/crear_superusuario.py
+
+LISTAR TODOS LOS FILES: $ find . \( -name ".venv" -o -name ".git" \) -prune -false -o -print
+
+
+Build imagen: docker build -t app_groupo3 .
+Crear el contenedor: docker create --name web_grupo3 -p 8000:8000 -v C:\Users\nicol\Desktop\data_grupo3/:/data app_grupo3
+Correr contenedor: docker start web_grupo3
